@@ -328,12 +328,15 @@ export default async function Home() {
               네이버 지도로 길찾기 →
             </a>
           </div>
-          <iframe
-            title="다산교회 위치"
-            src="https://maps.google.com/maps?q=경북%20고령군%20다산면%20다산중앙길%2019-14&z=16&output=embed"
-            className="min-h-72 w-full rounded-[2rem] border-0"
-            loading="lazy"
-          />
+          {/* 지도 칸을 왼쪽 카드와 같은 높이로 (iframe 은 칸을 꽉 채움) */}
+          <div className="relative min-h-72 overflow-hidden rounded-[2rem]">
+            <iframe
+              title="다산교회 위치"
+              src="https://maps.google.com/maps?q=경북%20고령군%20다산면%20다산중앙길%2019-14&z=16&output=embed"
+              className="absolute inset-0 h-full w-full border-0"
+              loading="lazy"
+            />
+          </div>
         </div>
       </section>
     </>

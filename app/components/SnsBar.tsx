@@ -56,27 +56,46 @@ export default function SnsBar({ className = "" }: { className?: string }) {
       });
   }, []);
 
-  const items = Object.entries(ICONS).filter(([k]) => links[k]);
-  if (items.length === 0) return null;
+  // 유튜브 → 인스타그램 → 쓰레드 → 카카오채널 순서로 항상 표시
+  const items = Object.entries(ICONS);
+  const cls = "grid h-8 w-8 place-items-center rounded-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md";
+  const icon = (svg: React.ReactNode) => (
+    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
+      {svg}
+    </svg>
+  );
 
   return (
     <div className={`flex items-center gap-1.5 ${className}`}>
-      {items.map(([k, ic]) => (
-        <a
-          key={k}
-          href={links[k]}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={`다산교회 ${ic.label}`}
-          title={ic.label}
-          className="grid h-8 w-8 place-items-center rounded-full shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-          style={{ background: ic.bg }}
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden>
-            {ic.svg}
-          </svg>
-        </a>
-      ))}
+      {items.map(([k, ic]) =>
+        links[k] ? (
+          <a
+            key={k}
+            href={links[k]}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`다산교회 ${ic.label}`}
+            title={ic.label}
+            className={cls}
+            style={{ background: ic.bg }}
+          >
+            {icon(ic.svg)}
+          </a>
+        ) : (
+          // 주소가 아직 없으면: 버튼은 보이고, 누르면 준비 중 안내 (관리자 > SNS 설정에서 주소 입력)
+          <button
+            key={k}
+            type="button"
+            onClick={() => alert(`다산교회 ${ic.label}은(는) 준비 중입니다.`)}
+            aria-label={`다산교회 ${ic.label} (준비 중)`}
+            title={`${ic.label} (준비 중)`}
+            className={`${cls} opacity-70`}
+            style={{ background: ic.bg }}
+          >
+            {icon(ic.svg)}
+          </button>
+        ),
+      )}
     </div>
   );
 }

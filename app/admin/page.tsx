@@ -393,8 +393,74 @@ function Members() {
     load();
   }
 
+  async function removeMember(m: Member) {
+    if (!confirm(`${m.full_name ?? m.email} 회원을 탈퇴 처리할까요?\n로그인 계정, 프로필, 작성한 댓글이 모두 삭제되며 되돌릴 수 없습니다.`)) return;
+    const { data: s } = await supabase.auth.getSession();
+    const res = await fetch("/api/admin/users", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${s.session?.access_token ?? ""}` },
+      body: JSON.stringify({ id: m.id }),
+    });
+    const j = (await res.json().catch(() => ({}))) as { error?: string };
+    if (!res.ok) return setErr(j.error ?? "삭제하지 못했습니다.");
+    load();
+  }
+
+  const [editing, setEditing] = useState<Member | null>(null);
+
+  async function saveMember(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editing) return;
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        full_name: editing.full_name || null,
+        gender: editing.gender || null,
+        phone: editing.phone || null,
+        address: editing.address || null,
+      })
+      .eq("id", editing.id);
+    if (error) return setErr(error.message);
+    setEditing(null);
+    load();
+  }
+
   return (
     <div>
+      {editing && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4" onClick={() => setEditing(null)}>
+          <form onSubmit={saveMember} onClick={(e) => e.stopPropagation()} className="w-full max-w-md space-y-4 rounded-3xl bg-background p-8 shadow-2xl">
+            <h2 className="text-2xl text-navy">회원 정보 수정</h2>
+            <p className="text-sm text-navy/50">{editing.email}</p>
+            {(
+              [
+                ["full_name", "이름"],
+                ["phone", "전화번호"],
+                ["address", "주소"],
+              ] as const
+            ).map(([k, l]) => (
+              <label key={k} className="block">
+                <span className="mb-1.5 block text-sm text-navy/60">{l}</span>
+                <input className={input} value={editing[k] ?? ""} onChange={(e) => setEditing({ ...editing, [k]: e.target.value })} />
+              </label>
+            ))}
+            <label className="block">
+              <span className="mb-1.5 block text-sm text-navy/60">성별</span>
+              <select className={input} value={editing.gender ?? ""} onChange={(e) => setEditing({ ...editing, gender: e.target.value || null })}>
+                <option value="">선택 안 함</option>
+                <option value="남">남</option>
+                <option value="여">여</option>
+              </select>
+            </label>
+            <div className="flex gap-2 pt-2">
+              <button type="button" onClick={() => setEditing(null)} className="btn flex-1 rounded-xl border border-navy/20 py-2.5 text-navy">
+                취소
+              </button>
+              <button className="btn flex-1 rounded-xl bg-navy py-2.5 text-white">저장</button>
+            </div>
+          </form>
+        </div>
+      )}
       <p className="mb-4 text-navy/60">
         회원 <b className="text-navy">{rows.length}</b>명 · 역할: 일반사용자(읽기) / 로그인사용자(읽기+댓글) / 관리자(모든 권한)
       </p>
@@ -403,7 +469,7 @@ function Members() {
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-navy/10 text-navy/50">
             <tr>
-              {["이름", "이메일", "성별", "전화번호", "주소", "가입일", "역할"].map((h) => (
+              {["이름", "이메일", "성별", "전화번호", "주소", "가입일", "역할", ""].map((h) => (
                 <th key={h} className="px-4 py-3 font-normal">
                   {h}
                 </th>
@@ -431,6 +497,16 @@ function Members() {
                       </option>
                     ))}
                   </select>
+                </td>
+                <td className="whitespace-nowrap px-4 py-3 text-right">
+                  <button onClick={() => setEditing(m)} className="mr-3 text-navy/60 hover:text-navy">
+                    수정
+                  </button>
+                  {m.id !== user?.id && (
+                    <button onClick={() => removeMember(m)} className="text-red-400 hover:text-red-600">
+                      탈퇴
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

@@ -63,7 +63,7 @@ body::after {
 /* 십자가를 쥔 손 사진(어두운 사진)을 옅게 깔아 잔잔하게 */
 body::after {
   background: url("/bg-cross.jpg") 15% center / cover no-repeat;
-  opacity: 0.16;
+  opacity: 0.4;
   filter: grayscale(20%);
 }
 body::before {
