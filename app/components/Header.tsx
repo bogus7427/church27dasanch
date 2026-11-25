@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import UserMenu from "./UserMenu";
 import SnsBar from "./SnsBar";
 
@@ -107,7 +107,9 @@ export default function Header() {
             온라인 예배
           </a>
           <span className="h-4 w-px bg-navy/15" />
-          <UserMenu />
+          <Suspense fallback={null}>
+            <UserMenu />
+          </Suspense>
         </div>
 
         <button aria-label="메뉴" className="text-navy lg:hidden" onClick={() => setOpen(!open)}>
@@ -129,7 +131,9 @@ export default function Header() {
               ))}
             </div>
           ))}
-          <UserMenu mobile onNavigate={() => setOpen(false)} />
+          <Suspense fallback={null}>
+            <UserMenu mobile onNavigate={() => setOpen(false)} />
+          </Suspense>
         </nav>
       )}
     </header>
