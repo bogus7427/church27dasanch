@@ -1,27 +1,93 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbf9f5;
-  --foreground: #1f2a37;
+  --background: #f6faf9;
+  --foreground: #1d3444;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-navy: #1c2e4a;
-  --color-gold: #c49a4a;
-  --color-cream: #f3ede2;
+  /* 다산교회 엠블럼 팔레트 (기존 클래스명 유지) */
+  --color-navy: #16384f;   /* 엠블럼 파랑을 진하게 (글자·버튼) */
+  --color-gold: #0b8fc0;   /* 엠블럼 파랑 (포인트) */
+  --color-cream: #e6f3f1;  /* 연한 청록 */
+  --color-olive: #6fae3a;  /* 엠블럼 연두 */
+  --color-teal: #3fa58a;   /* 엠블럼 청록 */
   --font-sans: var(--font-sans-kr);
-  --font-serif: var(--font-serif-kr);
+  --font-display: var(--font-display-kr);
+  --font-btn: var(--font-btn-kr);
+}
+
+/* 폰트 역할: 제목 = Black Han Sans(굵게) / 본문 = Jua(중간) / 버튼 = Dongle(얇고 작게) */
+h1, h2, h3, .font-display {
+  font-family: var(--font-display-kr), sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.btn {
+  font-family: var(--font-btn-kr), sans-serif;
+  font-weight: 400;
+  font-size: 1.55em; /* Dongle 은 글자가 작게 그려져서 키움 */
+  line-height: 1;
+  letter-spacing: 0;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-body {
+html {
   background: var(--background);
+}
+
+body {
+  background: transparent;
+  isolation: isolate; /* 배경 레이어(z-index:-1)가 body 안에서 맨 뒤에 깔리도록 */
   color: var(--foreground);
   font-family: var(--font-sans-kr), sans-serif;
+  font-synthesis: none; /* 한 굵기뿐인 폰트를 억지로 두껍게 만들지 않도록 */
   word-break: keep-all;
+  position: relative;
+}
+
+/* 전체 페이지 은은한 배경: 엠블럼 색 빛 번짐 + 옅은 기독교 사진 */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+/* 십자가를 쥔 손 사진(어두운 사진)을 옅게 깔아 잔잔하게 */
+body::after {
+  background: url("/bg-cross.jpg") 15% center / cover no-repeat;
+  opacity: 0.16;
+  filter: grayscale(20%);
+}
+body::before {
+  background:
+    radial-gradient(42rem 32rem at 8% 12%, rgba(2, 157, 202, 0.18), transparent 70%),
+    radial-gradient(38rem 30rem at 92% 30%, rgba(158, 199, 73, 0.22), transparent 70%),
+    radial-gradient(46rem 34rem at 50% 105%, rgba(82, 177, 146, 0.16), transparent 70%),
+    var(--background);
+  animation: bg-drift 30s ease-in-out infinite alternate;
+}
+
+@keyframes bg-drift {
+  0% { background-position: 0 0, 0 0, 0 0, 0 0; filter: hue-rotate(0deg); }
+  100% { background-position: 40px 30px, -40px 20px, 0 -30px, 0 0; filter: hue-rotate(-12deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+}
+
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.08); }
+}
+.blob {
+  animation: blob 14s ease-in-out infinite;
+  filter: blur(70px);
 }

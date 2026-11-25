@@ -1,184 +1,339 @@
-const worships = [
-  { name: "주일 1부 예배", time: "오전 9:00", place: "본당" },
-  { name: "주일 2부 예배", time: "오전 11:00", place: "본당" },
-  { name: "주일 오후 예배", time: "오후 2:00", place: "본당" },
-  { name: "수요 예배", time: "오후 7:30", place: "본당" },
-  { name: "금요 기도회", time: "오후 9:00", place: "본당" },
-  { name: "새벽 기도회", time: "오전 5:30 (월~토)", place: "소예배실" },
-];
+import { getChannelVideos, getHomeData, youtubeId, YOUTUBE_CHANNEL_URL } from "@/lib/queries";
+import VideoCoverflow, { type CoverVideo } from "./components/VideoCoverflow";
+import { IMG } from "@/lib/images";
+import Image from "next/image";
+import TypingText from "./components/TypingText";
 
-const sermons = [
-  { title: "믿음으로 걷는 길", verse: "히브리서 11:1-6", date: "2026.11.22" },
-  { title: "감사의 능력", verse: "데살로니가전서 5:16-18", date: "2026.11.15" },
-  { title: "선한 목자", verse: "요한복음 10:11-15", date: "2026.11.08" },
-];
+const fmt = (d: string, full = true) => {
+  const [y, m, day] = d.slice(0, 10).split("-");
+  return full ? `${y}.${m}.${day}` : `${m}.${day}`;
+};
 
-const news = [
-  { tag: "공지", title: "2027년 교회 표어 및 비전 선포", date: "11.24" },
-  { tag: "행사", title: "추수감사절 연합예배 안내", date: "11.20" },
-  { tag: "교육", title: "겨울 성경학교 교사 모집", date: "11.18" },
-  { tag: "새가족", title: "11월 새가족 환영회", date: "11.12" },
-];
+function Empty({ text }: { text: string }) {
+  return <p className="rounded-3xl bg-white py-12 text-center text-navy/40">{text}</p>;
+}
 
-const nextGen = ["영아부", "유치부", "초등부", "청소년부", "청년부"];
-
-function SectionTitle({ en, ko }: { en: string; ko: string }) {
+function Heading({ title, desc, light }: { title: string; desc: string; light?: boolean }) {
   return (
-    <div className="mb-10 text-center">
-      <p className="text-sm font-semibold tracking-[0.3em] text-gold">{en}</p>
-      <h2 className="mt-2 font-serif text-3xl font-bold text-navy md:text-4xl">{ko}</h2>
+    <div className="mx-auto mb-14 max-w-2xl text-center">
+      <h2 className={`text-5xl font-extrabold tracking-tight md:text-6xl lg:text-7xl ${light ? "text-white" : "text-navy"}`}>{title}</h2>
+      <p className={`mt-5 text-xl md:text-2xl ${light ? "text-white/70" : "text-navy/60"}`}>{desc}</p>
     </div>
   );
 }
 
-export default function Home() {
+function Pill({ href, children, dark }: { href: string; children: React.ReactNode; dark?: boolean }) {
+  return (
+    <a
+      href={href}
+      className={`btn inline-block rounded-full px-8 py-4 transition hover:-translate-y-0.5 ${
+        dark ? "bg-navy text-white hover:bg-gold" : "bg-white text-navy hover:bg-cream"
+      }`}
+    >
+      {children}
+    </a>
+  );
+}
+
+// 기존 홈페이지(dasanch.kr) 교회학교 안내
+const nextGen = [
+  { t: "유치부", time: "주일 오전 9:00 · 유치부실", motto: "예수님! 닮고 싶어요!", tone: "205,234,244", img: IMG.toddler },
+  { t: "유초등부", time: "주일 오전 9:00 · 유초등부실", motto: "주의 뜻이 이루어지도록 해요!!", tone: "190,228,214", img: IMG.children },
+  { t: "중고등부", time: "주일 오전 9:00 · 교육관 1층", motto: "좋은 열매를 맺는 바른생활 루틴이!", tone: "216,236,186", img: IMG.teens },
+  { t: "청년부", time: "주일 오후 2:00", motto: "내가 여기 있나이다 나를 보내소서", tone: "176,214,132", img: IMG.youth },
+];
+
+export default async function Home() {
+  const [{ worships, news }, channel] = await Promise.all([getHomeData(), getChannelVideos()]);
+  const cover: CoverVideo[] = channel
+    .slice(0, 9)
+    .map((v) => ({ yt: youtubeId(v.video_url) ?? "", title: v.title, date: fmt(v.preached_at) }))
+    .filter((v) => v.yt);
+
   return (
     <>
-      {/* Hero */}
-      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden bg-navy text-center text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,#c49a4a55,transparent_50%),radial-gradient(circle_at_80%_80%,#3b5a8a,transparent_55%)]" />
-        <div className="relative px-5">
-          <p className="tracking-[0.4em] text-gold">WELCOME TO DASAN CHURCH</p>
-          <h1 className="mt-6 font-serif text-4xl font-bold leading-tight md:text-6xl">
-            말씀으로 세워지고
-            <br />
-            사랑으로 하나 되는 교회
-          </h1>
-          <p className="mx-auto mt-6 max-w-xl text-white/75">
-            “너희는 먼저 그의 나라와 그의 의를 구하라” — 마태복음 6:33
+      {/* Hero: 가운데 정렬 큰 헤드라인 + 그라데이션 블롭 */}
+      <section className="relative overflow-hidden px-5 pb-24 pt-28 text-center md:pt-36">
+        <div className="blob absolute -left-20 top-10 h-80 w-80 rounded-full bg-[#9ec749]/45" />
+        <div className="blob absolute -right-10 top-40 h-96 w-96 rounded-full bg-[#029dca]/30 [animation-delay:-6s]" />
+        <div className="relative mx-auto max-w-6xl">
+          <p className="mb-6 inline-block rounded-full bg-white/70 px-5 py-2 text-base font-medium text-navy/70">
+            Since 1907 · 경북 고령군 다산면
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <a href="#worship" className="rounded-full bg-gold px-7 py-3 font-semibold hover:brightness-110">
-              예배 안내
-            </a>
-            <a href="#sermon" className="rounded-full border border-white/60 px-7 py-3 font-semibold hover:bg-white hover:text-navy">
-              설교 보기
-            </a>
+          <h1 className="text-[2.9rem] font-extrabold leading-[1.1] tracking-tight text-navy sm:text-6xl md:text-7xl lg:text-8xl xl:text-[6.5rem]">
+            하나님의 <span className="whitespace-nowrap">기쁨이 되는</span>
+            <br />
+            <span className="text-gold">행복한 다산교회</span>
+          </h1>
+          <p className="mx-auto mt-8 max-w-2xl text-xl text-navy/60 md:text-2xl">
+            “그들이 사도의 가르침을 받아 서로 교제하고 떡을 떼며 오로지 기도하기를 힘쓰니라”
+            <span className="mt-2 block text-lg">사도행전 2:42</span>
+          </p>
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            <Pill href="#worship" dark>
+              예배 시간 보기
+            </Pill>
+            <Pill href="#newcomer">처음 오셨나요?</Pill>
           </div>
         </div>
-      </section>
 
-      {/* Quick links */}
-      <section className="relative z-10 mx-auto -mt-14 grid max-w-6xl grid-cols-2 gap-3 px-5 md:grid-cols-4">
-        {[
-          ["🙏", "새가족 안내", "#newcomer"],
-          ["📖", "이번 주 주보", "#news"],
-          ["▶", "온라인 예배", "#sermon"],
-          ["📍", "오시는 길", "#location"],
-        ].map(([icon, label, href]) => (
-          <a key={label} href={href} className="rounded-2xl bg-white p-6 text-center shadow-lg transition hover:-translate-y-1">
-            <div className="text-3xl">{icon}</div>
-            <p className="mt-3 font-semibold text-navy">{label}</p>
-          </a>
-        ))}
-      </section>
-
-      {/* About */}
-      <section id="about" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-24">
-        <div className="grid items-center gap-12 md:grid-cols-2">
-          <div className="aspect-[4/5] rounded-3xl bg-gradient-to-br from-cream to-gold/40" />
-          <div>
-            <p className="text-sm font-semibold tracking-[0.3em] text-gold">ABOUT US</p>
-            <h2 className="mt-2 font-serif text-3xl font-bold text-navy md:text-4xl">담임목사 인사말</h2>
-            <p className="mt-6 leading-8 text-gray-600">
-              다산교회 홈페이지를 찾아주신 여러분을 주님의 이름으로 환영합니다. 우리 교회는 하나님의 말씀 위에 바로 서서,
-              예배가 살아있고 다음 세대를 세우며 지역을 섬기는 교회가 되기를 소망합니다. 이곳에서 참된 쉼과 은혜를 누리시길 축복합니다.
+        {/* 히어로 아래 큰 비주얼 카드 */}
+        <div className="relative mx-auto mt-20 grid max-w-6xl gap-4 md:grid-cols-3">
+          <div
+            className="relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-cover bg-center md:col-span-2 md:aspect-auto"
+            style={{ backgroundImage: `url(${IMG.sanctuary})` }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e2d]/55 to-transparent" />
+            <p className="absolute bottom-7 left-7 text-left text-xl font-bold text-white md:text-2xl">
+              주님의 전에서
+              <br />
+              함께 예배해요
             </p>
-            <p className="mt-6 font-serif text-lg text-navy">담임목사 ○○○</p>
-            <div className="mt-8 grid grid-cols-3 gap-3 text-center">
-              {["예배 공동체", "양육 공동체", "선교 공동체"].map((v) => (
-                <div key={v} className="rounded-xl bg-cream py-4 text-sm font-semibold text-navy">
-                  {v}
-                </div>
-              ))}
+          </div>
+          <div className="grid gap-4">
+            <div
+              className="relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-navy bg-cover bg-center p-7 text-left text-white"
+              style={{ backgroundImage: `linear-gradient(to top, rgba(22,56,79,.92), rgba(22,56,79,.2)), url(${IMG.bibleRead})` }}
+            >
+              <p className="text-sm text-white/60">이번 주 말씀</p>
+              <p className="mt-1 text-xl font-bold">{cover[0]?.title ?? "주일 설교"}</p>
+            </div>
+            <div
+              className="flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-olive bg-cover bg-center p-7 text-left text-white"
+              style={{ backgroundImage: `linear-gradient(to top, rgba(63,165,138,.95), rgba(63,165,138,.3)), url(${IMG.cross})` }}
+            >
+              <p className="text-sm text-white/70">주일 예배</p>
+              <p className="mt-1 text-xl font-bold">{worships[0]?.time ?? "오전 11:00"}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Worship */}
-      <section id="worship" className="scroll-mt-20 bg-cream py-24">
-        <div className="mx-auto max-w-6xl px-5">
-          <SectionTitle en="WORSHIP" ko="예배 안내" />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {worships.map((w) => (
-              <div key={w.name} className="rounded-2xl border border-gold/20 bg-white p-6">
-                <p className="text-lg font-bold text-navy">{w.name}</p>
-                <p className="mt-2 text-2xl font-semibold text-gold">{w.time}</p>
-                <p className="mt-1 text-sm text-gray-500">{w.place}</p>
-              </div>
-            ))}
+      {/* About */}
+      <section id="about" className="scroll-mt-20 px-5 py-28">
+        <Heading title="어서 오세요" desc="우리는 오래전부터 당신이 오기만을 손꼽아 기다리고 있었습니다" />
+        <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">
+          {[
+            ["01", "바른 교회", "하나님의 말씀에 근거한 바른 교회의 모습을 보이도록 개혁하고 변화하는 교회입니다."],
+            ["02", "빛을 발하는 교회", "예수님과 우리가 성령 안에 하나 되어 십자가의 능력으로 빛을 발하는 교회입니다."],
+            ["03", "선교하는 교회", "자립이 어려운 농어촌·개척교회와 군선교, 이웃을 섬기는 기관을 협력 지원합니다."],
+          ].map(([n, t, d]) => (
+            <div key={t} className="rounded-[2rem] bg-white p-10 transition hover:-translate-y-1 hover:shadow-xl">
+              <p className="text-sm font-bold text-gold">{n}</p>
+              <h3 className="mt-6 text-2xl font-bold text-navy">{t}</h3>
+              <p className="mt-3 leading-7 text-navy/60">{d}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* 엠블럼과 핵심 비전 */}
+        <div className="mx-auto mt-16 grid max-w-6xl items-center gap-10 rounded-[2rem] bg-white p-10 md:grid-cols-[220px_1fr] md:p-14">
+          <Image src="/dasan-emblem.png" alt="다산교회 엠블럼" width={220} height={251} className="mx-auto w-40 md:w-full" />
+          <div>
+            <p className="text-sm font-bold tracking-[0.3em] text-gold">EMBLEM</p>
+            <h3 className="mt-3 text-3xl font-extrabold tracking-tight text-navy">다산교회의 핵심 비전</h3>
+            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+              {[
+                ["복음 중심의 예배공동체", "십자가 모양"],
+                ["말씀 중심의 훈련공동체", "성경책 펼친 모양"],
+                ["기도 중심의 능력공동체", "날개 모양"],
+                ["사랑 중심의 교제공동체", "원 모양"],
+                ["소통 중심의 선교공동체", "지구 모양"],
+              ].map(([t, s], i) => (
+                <li key={t} className="flex items-baseline gap-3 border-b border-navy/10 pb-3">
+                  <span className="text-sm font-bold text-gold">{i + 1}</span>
+                  <span>
+                    <span className="font-semibold text-navy">{t}</span>
+                    <span className="ml-2 text-sm text-navy/40">({s})</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mx-auto mt-6 grid max-w-6xl overflow-hidden rounded-[2rem] bg-cream md:grid-cols-2">
+          <div className="min-h-72 bg-cover bg-center" style={{ backgroundImage: `url(${IMG.bible})` }} />
+          <div className="p-10 text-center md:p-14 md:text-left">
+          <p className="text-lg leading-9 text-navy/80 md:text-xl">
+            예수님의 보혈이 죄와 허물로 죽었던 우리를 살리셨고 영원한 생명을 주셨습니다. 이제 예수님을 평생 우리들의 삶의
+            주인으로 삼고, 어제보다 나은 오늘, 오늘보다 나은 내일을 살아가는 모든 분들이 되기를 바랍니다. 다산교회는
+            여러분들의 신앙이 성숙될 수 있도록 최선을 다해 도와드리겠습니다.
+          </p>
+          <p className="mt-6 font-semibold text-navy">담임목사 김준영</p>
           </div>
         </div>
       </section>
 
-      {/* Sermon */}
-      <section id="sermon" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-24">
-        <SectionTitle en="SERMON" ko="최근 설교" />
-        <div className="grid gap-6 md:grid-cols-3">
-          {sermons.map((s, i) => (
-            <article key={s.title} className="group overflow-hidden rounded-2xl bg-white shadow-md">
-              <div className={`relative grid aspect-video place-items-center ${i === 0 ? "bg-navy" : "bg-navy/80"}`}>
-                <span className="grid h-14 w-14 place-items-center rounded-full bg-white/90 text-navy transition group-hover:scale-110">
-                  ▶
+      {/* Worship */}
+      <section id="worship" className="scroll-mt-20 bg-white/55 px-5 py-28 backdrop-blur-sm">
+        <Heading title="예배 안내" desc="언제든 편하게 오세요. 자리가 준비되어 있습니다." />
+        <div className="mx-auto max-w-4xl">
+          {worships.length === 0 && <Empty text="등록된 예배 정보가 없습니다." />}
+          <ul className="divide-y divide-navy/10">
+            {worships.map((w) => (
+              <li key={w.id} className="flex flex-wrap items-baseline justify-between gap-2 py-6">
+                <span className="text-xl font-bold text-navy">{w.name}</span>
+                <span className="flex items-baseline gap-4">
+                  <span className="text-sm text-navy/40">{w.place}</span>
+                  <span className="text-2xl font-extrabold text-gold">{w.time}</span>
                 </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Sermon: 유튜브 채널 커버플로우 */}
+      <section
+        id="sermon"
+        className="relative scroll-mt-20 overflow-hidden bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,.85)_0%,rgba(230,243,241,.35)_70%)] px-5 py-28"
+      >
+        <Heading title="DASAN TV" desc="좌우로 넘겨 보고, 가운데 영상을 눌러 바로 시청하세요." />
+        <VideoCoverflow videos={cover} channelUrl={YOUTUBE_CHANNEL_URL} />
+
+        {/* 채널 보는 방법 */}
+        <div className="mx-auto mt-24 max-w-5xl">
+          <p className="text-center text-xs font-bold tracking-[0.4em] text-navy/40">HOW TO WATCH</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {[
+              ["#7fd0ea", "01", "여기서 바로 보기", "위 카드에서 가운데 영상을 누르면 홈페이지 안에서 바로 재생됩니다."],
+              ["#c4e38f", "02", "채널 구독하기", "구독하면 새 설교와 생방송 알림을 가장 먼저 받을 수 있어요."],
+              ["#8fd5bf", "03", "알림 🔔 설정", "구독 후 종 모양을 ‘전체’로 바꾸면 주일 실시간 예배 알림이 옵니다."],
+            ].map(([bg, n, t, d]) => (
+              <div key={n} className="overflow-hidden rounded-2xl bg-white shadow-[0_20px_40px_-20px_rgba(22,56,79,0.25)]">
+                <div className="px-6 pb-3 pt-5" style={{ background: bg }}>
+                  <p className="text-xs font-bold text-black">({n})</p>
+                  <p className="mt-1 text-2xl font-black tracking-tight text-black">{t}</p>
+                </div>
+                <p className="px-6 py-5 text-sm leading-6 text-navy/70">{d}</p>
               </div>
-              <div className="p-5">
-                <p className="text-xs text-gray-400">{s.date}</p>
-                <h3 className="mt-1 text-lg font-bold text-navy">{s.title}</h3>
-                <p className="text-sm text-gold">{s.verse}</p>
-              </div>
-            </article>
-          ))}
+            ))}
+          </div>
+          <div className="mt-12 flex flex-wrap justify-center gap-3">
+            <a
+              href={`${YOUTUBE_CHANNEL_URL}?sub_confirmation=1`}
+              target="_blank"
+              rel="noreferrer"
+              className="btn rounded-full bg-[#ff0000] px-8 py-4 text-white transition hover:-translate-y-0.5"
+            >
+              ● 유튜브 구독하기
+            </a>
+            <Pill href="/video" dark>
+              영상 전체 보기
+            </Pill>
+          </div>
         </div>
       </section>
 
       {/* Next generation */}
-      <section id="next" className="scroll-mt-20 bg-navy py-24 text-white">
-        <div className="mx-auto max-w-6xl px-5 text-center">
-          <p className="text-sm font-semibold tracking-[0.3em] text-gold">NEXT GENERATION</p>
-          <h2 className="mt-2 font-serif text-3xl font-bold md:text-4xl">다음 세대를 세우는 교회</h2>
-          <div className="mt-10 flex flex-wrap justify-center gap-3">
-            {nextGen.map((g) => (
-              <span key={g} className="rounded-full border border-white/30 px-6 py-3 hover:border-gold hover:text-gold">
-                {g}
-              </span>
-            ))}
-          </div>
+      <section id="next" className="scroll-mt-20 bg-navy px-5 py-28">
+        <Heading
+          title="다음 세대"
+          desc="형식적이고 지루한 예배가 아닌, 즐겁게 예배드리는 세대입니다."
+          light
+        />
+        <div
+          className="mx-auto mb-4 aspect-[21/9] max-w-6xl rounded-[1.5rem] bg-cover bg-center md:aspect-[3/1]"
+          style={{ backgroundImage: `url(${IMG.kids})` }}
+        />
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 md:grid-cols-4">
+          {nextGen.map(({ t, time, motto, tone, img }, i) => (
+            <div
+              key={t}
+              className="group relative flex aspect-[3/4] flex-col justify-between overflow-hidden rounded-[1.5rem] p-6 transition hover:-translate-y-1"
+              style={{ background: `rgb(${tone})` }}
+            >
+              {/* 사진 + 위쪽은 어둡게(표어), 아래쪽은 카드 색으로(부서명) */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-105"
+                style={{ backgroundImage: `url(${img})` }}
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background: `linear-gradient(to bottom, rgba(10,30,45,.6) 0%, rgba(10,30,45,0) 38%, rgba(${tone},0) 52%, rgba(${tone},.95) 80%, rgb(${tone}) 100%)`,
+                }}
+              />
+              <p className="relative min-h-[3rem] text-base font-semibold leading-6 text-white drop-shadow">
+                “<TypingText text={motto} delay={i * 700} />”
+              </p>
+              <div className="relative">
+                <p className="text-xs text-navy/70">{time}</p>
+                <p className="mt-1 text-2xl font-bold text-navy">{t}</p>
+              </div>
+            </div>
+          ))}
         </div>
+        <p className="mt-10 text-center text-sm text-white/50">중보기도모임 · 화요일 저녁 7:00</p>
       </section>
 
       {/* News */}
-      <section id="news" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-24">
-        <SectionTitle en="NEWS" ko="교회 소식" />
-        <ul className="divide-y rounded-2xl bg-white shadow-sm">
-          {news.map((n) => (
-            <li key={n.title} className="flex items-center gap-4 px-6 py-5 hover:bg-cream/60">
-              <span className="w-16 shrink-0 rounded-full bg-gold/15 py-1 text-center text-xs font-semibold text-gold">
-                {n.tag}
-              </span>
-              <span className="flex-1 font-medium text-navy">{n.title}</span>
-              <span className="text-sm text-gray-400">{n.date}</span>
-            </li>
-          ))}
-        </ul>
+      <section id="news" className="scroll-mt-20 px-5 py-28">
+        <Heading title="교회 소식" desc="다산교회의 새로운 이야기" />
+        <div className="mx-auto max-w-4xl">
+          {news.length === 0 && <Empty text="등록된 소식이 없습니다." />}
+          <ul className="space-y-3">
+            {news.map((n) => (
+              <li key={n.id}>
+                <a href={`/news/${n.id}`} className="flex items-center gap-5 rounded-2xl bg-white px-6 py-5 transition hover:shadow-md">
+                  <span className="rounded-full bg-cream px-3 py-1 text-xs font-semibold text-gold">{n.tag}</span>
+                  <span className="flex-1 font-semibold text-navy">{n.title}</span>
+                  <span className="text-sm text-navy/40">{fmt(n.created_at, false)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
       </section>
 
-      {/* Newcomer + Location */}
-      <section className="mx-auto grid max-w-6xl gap-6 px-5 pb-24 md:grid-cols-2">
-        <div id="newcomer" className="scroll-mt-20 rounded-3xl bg-gold p-10 text-white">
-          <h3 className="font-serif text-2xl font-bold">처음 오셨나요?</h3>
-          <p className="mt-4 leading-7 text-white/90">
-            다산교회에 오신 것을 환영합니다. 예배 후 새가족실에서 안내를 도와드립니다.
-          </p>
-          <button className="mt-8 rounded-full bg-white px-6 py-3 font-semibold text-gold">새가족 등록하기</button>
-        </div>
-        <div id="location" className="scroll-mt-20 rounded-3xl bg-cream p-10">
-          <h3 className="font-serif text-2xl font-bold text-navy">오시는 길</h3>
-          <p className="mt-4 text-gray-600">(교회 주소 입력)</p>
-          <div className="mt-6 grid aspect-video place-items-center rounded-xl bg-white text-sm text-gray-400">
-            지도 영역 (카카오/네이버 지도 연동)
+      {/* CTA + 오시는 길 */}
+      <section className="px-5 pb-28">
+        <div
+          id="newcomer"
+          className="relative mx-auto max-w-6xl scroll-mt-20 overflow-hidden rounded-[2.5rem] bg-gold bg-cover bg-center px-8 py-20 text-center text-white"
+          style={{ backgroundImage: `linear-gradient(rgba(2,140,185,.66), rgba(22,56,79,.8)), url(${IMG.congregation})` }}
+        >
+          <div className="relative">
+            <h2 className="text-5xl font-extrabold tracking-tight md:text-6xl">처음 오셨나요?</h2>
+            <p className="mx-auto mt-4 max-w-md text-lg text-white/85">
+              다산교회와 성도들은 새가족분들을 언제나 환영합니다. 등록하셔서 함께 아름다운 믿음의 공동체를 이루어갑시다.
+            </p>
+            <div className="mt-10">
+              <Pill href="/newcomer">새가족 등록하기</Pill>
+            </div>
           </div>
+        </div>
+
+        <div id="location" className="mx-auto mt-6 grid max-w-6xl scroll-mt-20 gap-6 md:grid-cols-2">
+          <div className="rounded-[2rem] bg-white p-10">
+            <h3 className="text-2xl font-bold text-navy">오시는 길</h3>
+            <p className="mt-4 text-lg font-semibold text-navy">경북 고령군 다산면 다산중앙길 19-14</p>
+            <p className="mt-1 text-navy/50">(우) 40109 · 다산교회</p>
+            <div className="mt-6 space-y-1 text-navy/70">
+              <p>
+                전화{" "}
+                <a href="tel:054-956-0691" className="font-semibold text-navy underline-offset-2 hover:underline">
+                  054-956-0691
+                </a>
+              </p>
+              <p>팩스 054-955-2749</p>
+            </div>
+            <a
+              href="https://map.naver.com/p/search/경북 고령군 다산면 다산중앙길 19-14"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-8 inline-block rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white hover:bg-gold"
+            >
+              네이버 지도로 길찾기 →
+            </a>
+          </div>
+          <iframe
+            title="다산교회 위치"
+            src="https://maps.google.com/maps?q=경북%20고령군%20다산면%20다산중앙길%2019-14&z=16&output=embed"
+            className="min-h-72 w-full rounded-[2rem] border-0"
+            loading="lazy"
+          />
         </div>
       </section>
     </>
