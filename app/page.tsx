@@ -172,12 +172,14 @@ export default async function Home() {
           {worships.length === 0 && <Empty text="등록된 예배 정보가 없습니다." />}
           <ul className="divide-y divide-navy/10">
             {worships.map((w) => (
-              <li key={w.id} className="flex flex-wrap items-baseline justify-between gap-2 py-6">
+              // 예배이름 | 장소 | 시간 을 고정 폭 칸으로 나눠 앞글자를 세로로 맞춤
+              <li
+                key={w.id}
+                className="grid grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-1 py-6 sm:grid-cols-[1fr_6rem_15rem]"
+              >
                 <span className="text-xl font-bold text-navy">{w.name}</span>
-                <span className="flex items-baseline gap-4">
-                  <span className="text-sm text-navy/40">{w.place}</span>
-                  <span className="text-2xl font-extrabold text-gold">{w.time}</span>
-                </span>
+                <span className="order-3 text-sm text-navy/40 sm:order-none">{w.place}</span>
+                <span className="text-2xl font-extrabold text-gold">{w.time}</span>
               </li>
             ))}
           </ul>
