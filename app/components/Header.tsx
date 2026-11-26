@@ -16,7 +16,11 @@ const menus = SECTIONS.map((s) => ({
 // 상단 메뉴(교회소개·말씀.찬양·다음세대·교제.소식): 새 창으로 첫 페이지 열기
 const POPUP = new Set(SECTIONS.map((s) => s.label));
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
-  const w = window.open(e.currentTarget.href, "dasanIntro", "width=860,height=640,left=100,top=50,scrollbars=yes,resizable=yes");
+  // 화면 비율로 위치·크기 지정 (왼쪽 14% · 위 1.5%, 너비 75% · 높이 88%)
+  const W = screen.availWidth;
+  const H = screen.availHeight;
+  const size = `width=${Math.round(W * 0.75)},height=${Math.round(H * 0.88)},left=${Math.round(W * 0.137)},top=${Math.round(H * 0.016)}`;
+  const w = window.open(e.currentTarget.href, "dasanIntro", `${size},scrollbars=yes,resizable=yes`);
   if (w) {
     e.preventDefault();
     w.focus();
