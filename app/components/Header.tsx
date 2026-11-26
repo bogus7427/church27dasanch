@@ -5,55 +5,13 @@ import Link from "next/link";
 import { Suspense, useState } from "react";
 import UserMenu from "./UserMenu";
 import SnsBar from "./SnsBar";
+import { SECTIONS, pageHref } from "@/lib/sitePages";
 
-const menus = [
-  {
-    label: "교회소개",
-    href: "/#about",
-    sub: [
-      ["인사말", "담임목사님의 환영 인사"],
-      ["비전", "우리가 꿈꾸는 교회"],
-      ["섬기는 분들", "교역자와 직분자 소개"],
-      ["오시는 길", "위치와 주차 안내"],
-    ],
-  },
-  {
-    label: "예배",
-    href: "/#worship",
-    sub: [
-      ["예배시간", "주일·수요·새벽 예배"],
-      ["주보", "이번 주 주보 보기"],
-    ],
-  },
-  {
-    label: "말씀",
-    href: "/video",
-    sub: [
-      ["DASAN TV", "설교·찬양 영상 모아보기"],
-      ["주일설교", "주일 예배 설교 영상"],
-      ["수요설교", "수요 예배 말씀"],
-    ],
-  },
-  {
-    label: "다음세대",
-    href: "/#next",
-    sub: [
-      ["교회학교", "영아부부터 청소년부까지"],
-      ["청년부", "함께 성장하는 청년 공동체"],
-    ],
-  },
-  {
-    label: "소식",
-    href: "/#news",
-    sub: [
-      ["공지사항", "교회의 새 소식"],
-      ["게시판", "다산교회 이야기와 나눔"],
-      ["교회앨범", "함께한 순간들"],
-    ],
-  },
-];
-
-const SUB_LINKS: Record<string, string> = { 교회앨범: "/album", 게시판: "/board", "DASAN TV": "/video" };
+const menus = SECTIONS.map((s) => ({
+  label: s.label,
+  href: pageHref(s.pages[0]),
+  sub: s.pages.map((p) => [p.title, pageHref(p)] as const),
+}));
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -86,12 +44,11 @@ export default function Header() {
                   {m.label}
                 </a>
                 <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition group-hover:visible group-hover:opacity-100">
-                  <ul className="w-64 rounded-2xl border border-navy/5 bg-white p-2 shadow-xl">
-                    {m.sub.map(([t, d]) => (
+                  <ul className="w-56 rounded-2xl border border-navy/5 bg-white p-2 shadow-xl">
+                    {m.sub.map(([t, h]) => (
                       <li key={t}>
-                        <a href={SUB_LINKS[t] ?? m.href} className="block rounded-xl px-4 py-3 hover:bg-cream">
-                          <p className="font-semibold text-navy">{t}</p>
-                          <p className="text-sm text-navy/50">{d}</p>
+                        <a href={h} className="block rounded-xl px-4 py-2.5 font-semibold text-navy hover:bg-cream">
+                          {t}
                         </a>
                       </li>
                     ))}
@@ -124,8 +81,8 @@ export default function Header() {
           {menus.map((m) => (
             <div key={m.label} className="border-b border-navy/10 py-4">
               <p className="text-lg font-bold text-navy">{m.label}</p>
-              {m.sub.map(([t]) => (
-                <a key={t} href={SUB_LINKS[t] ?? m.href} onClick={() => setOpen(false)} className="mt-2 block text-navy/60">
+              {m.sub.map(([t, h]) => (
+                <a key={t} href={h} onClick={() => setOpen(false)} className="mt-2 block text-navy/60">
                   {t}
                 </a>
               ))}

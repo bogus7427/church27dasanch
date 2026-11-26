@@ -1,0 +1,137 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { SECTIONS, findPage, pageHref } from "@/lib/sitePages";
+import { HISTORY } from "@/lib/history";
+
+export function generateStaticParams() {
+  return SECTIONS.flatMap((s) => s.pages.filter((p) => !p.href).map((p) => ({ slug: p.slug })));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const f = findPage(slug);
+  return { title: f ? `${f.page.title} | 다산교회` : "다산교회" };
+}
+
+export default async function InfoPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const f = findPage(slug);
+  if (!f) notFound();
+  const { section, page } = f;
+  const empty = !page.body && !page.info && !page.groups && !page.history && !page.video;
+
+  return (
+    <div className="mx-auto max-w-6xl px-5 py-16">
+      <p className="text-sm font-bold uppercase tracking-widest text-gold">{section.en}</p>
+      <h1 className="mt-2 text-5xl text-navy">{page.title}</h1>
+
+      <div className="mt-10 grid gap-8 md:grid-cols-[200px_1fr]">
+        {/* 같은 메뉴의 다른 페이지 */}
+        <aside>
+          <p className="mb-3 border-b-4 border-gold pb-2 text-lg font-bold text-navy">{section.label}</p>
+          <ul className="flex flex-wrap gap-2 md:block md:space-y-1">
+            {section.pages.map((p) => (
+              <li key={p.slug}>
+                <Link
+                  href={pageHref(p)}
+                  className={`block rounded-lg px-3 py-2 ${p.slug === slug ? "bg-navy text-white" : "text-navy/70 hover:bg-cream"}`}
+                >
+                  {p.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        <section className="rounded-3xl bg-white p-8 leading-8 text-navy/80 md:p-12">
+          {page.kind === "board" ? (
+            <>
+              <div className="grid grid-cols-[60px_1fr_100px] border-y-2 border-navy py-3 text-center text-sm font-bold text-navy">
+                <span>번호</span>
+                <span>제목</span>
+                <span>날짜</span>
+              </div>
+              <p className="py-16 text-center text-navy/40">등록된 게시물이 없습니다.</p>
+            </>
+          ) : (
+            <>
+              {page.lead && <p className="mb-6 text-2xl font-bold text-gold md:text-3xl">{page.lead}</p>}
+              {page.video && (
+                <div className="aspect-video overflow-hidden rounded-2xl">
+                  <iframe
+                    title={page.title}
+                    className="h-full w-full"
+                    src={`https://www.youtube-nocookie.com/embed/${page.video}?rel=0`}
+                    allowFullScreen
+                  />
+                </div>
+              )}
+              {slug === "greeting" || slug === "logo" ? (
+                <div className="mb-8 flex justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={page.images![0]} alt={page.title} className="max-h-80 w-auto" />
+                </div>
+              ) : null}
+              {page.body?.map((t) => (
+                <p key={t} className="mb-4">
+                  {t}
+                </p>
+              ))}
+              {page.history && (
+                <ol className="space-y-4 border-l-2 border-gold/40 pl-6">
+                  {HISTORY.map(([d, t], i) => (
+                    <li key={i} className="relative">
+                      <span className="absolute -left-[31px] top-2.5 h-2.5 w-2.5 rounded-full bg-gold" />
+                      <p className="font-bold text-navy">{d}</p>
+                      <p className="whitespace-pre-line">{t}</p>
+                    </li>
+                  ))}
+                </ol>
+              )}
+              {page.groups && (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {page.groups.map((g) => (
+                    <div key={g.h} className="rounded-2xl bg-cream p-5">
+                      <p className="mb-2 font-bold text-navy">{g.h}</p>
+                      <ul className="text-[15px] leading-7">
+                        {g.lines.map((l) => (
+                          <li key={l}>{l}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {page.info && (
+                <dl className="divide-y divide-navy/10">
+                  {page.info.map(([k, v]) => (
+                    <div key={k} className="grid grid-cols-[120px_1fr] py-3">
+                      <dt className="font-bold text-navy">{k}</dt>
+                      <dd>{v}</dd>
+                    </div>
+                  ))}
+                </dl>
+              )}
+              {page.images && slug !== "greeting" && slug !== "logo" && (
+                <div className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3">
+                  {page.images.map((src) => (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img key={src} src={src} alt="" loading="lazy" className="aspect-[3/2] w-full rounded-xl object-cover" />
+                  ))}
+                </div>
+              )}
+              {page.map && (
+                <iframe
+                  title="지도"
+                  className="mt-6 h-80 w-full rounded-2xl"
+                  src="https://maps.google.com/maps?q=경북%20고령군%20다산면%20다산중앙길%2019-14&z=16&output=embed"
+                />
+              )}
+              {empty && <p className="py-16 text-center text-navy/40">내용 준비 중입니다.</p>}
+            </>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+}
