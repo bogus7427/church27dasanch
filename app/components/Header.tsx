@@ -13,11 +13,10 @@ const menus = SECTIONS.map((s) => ({
   sub: s.pages.map((p) => [p.title, pageHref(p)] as const),
 }));
 
-// 교회소개 · 소개영상: 640×480 새 창으로 소개영상 열기
-const INTRO_VIDEO = "https://www.youtube.com/embed/k7JFgEva4Ko?autoplay=1&rel=0";
-const POPUP = new Set(["교회소개", "다산교회 소개영상"]);
-function openIntro(e: React.MouseEvent) {
-  const w = window.open(INTRO_VIDEO, "dasanIntro", "width=640,height=480,left=200,top=150");
+// 교회소개: 새 창으로 교회소개 페이지 열기
+const POPUP = new Set(["교회소개"]);
+function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
+  const w = window.open(e.currentTarget.href, "dasanIntro", "width=1200,height=850,left=100,top=50,scrollbars=yes,resizable=yes");
   if (w) {
     e.preventDefault();
     w.focus();
