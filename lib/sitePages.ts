@@ -19,6 +19,7 @@ export type SubPage = {
   video?: string; // 유튜브 ID
   history?: boolean; // 연혁 타임라인
   people?: { role: string; name?: string; img: string }[];
+  places?: [string, [string, number[]][]][];
   map?: boolean;
 };
 
@@ -135,11 +136,33 @@ export const SECTIONS: Section[] = [
         slug: "facilities",
         title: "교회시설",
         kind: "page",
-        body: [
-          "다산교회 시설을 안내 해 드리겠습니다.",
-          "예배당 · 중층 · 본당 로비 · 방송실 · 자모실 · 새가족실 · 유치부실 · 유초등부실 · 찬양대 연습실 · 식당 · 사무실 · 복사실",
+        lead: "다산교회 시설을 안내 해 드리겠습니다.",
+        // [층, [장소, 사진 번호(facility-N.jpg)][]]
+        places: [
+          ["본당 (지하)", [["식당", [4, 7]]]],
+          [
+            "본당 (1층)",
+            [
+              ["본당 로비", [3]],
+              ["새가족실", [1]],
+              ["유치부실", [5]],
+              ["유초등부실", [2]],
+              ["찬양대 연습실", [6]],
+              ["사무실", [9, 10]],
+              ["복사실", [8]],
+            ],
+          ],
+          [
+            "본당 (2층)",
+            [
+              ["예배당", [11, 12, 13, 18]],
+              ["중층", [14, 15]],
+              ["방송실", [16]],
+              ["자모실", [17]],
+            ],
+          ],
+          ["교육관", [["교육관", [19, 20]]]],
         ],
-        images: Array.from({ length: 20 }, (_, i) => `/info/facility-${i + 1}.jpg`),
       },
       {
         slug: "worship",

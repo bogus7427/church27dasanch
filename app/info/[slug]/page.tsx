@@ -18,32 +18,44 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
   const f = findPage(slug);
   if (!f) notFound();
   const { section, page } = f;
-  const empty = !page.body && !page.info && !page.groups && !page.history && !page.video && !page.people;
+  const empty = !page.body && !page.info && !page.groups && !page.history && !page.video && !page.people && !page.places;
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-16">
-      <p className="text-sm font-bold uppercase tracking-widest text-gold">{section.en}</p>
-      <h1 className="mt-2 text-5xl text-navy">{page.title}</h1>
+    <div className="bg-white">
+      {/* 상단 배너: 메뉴 이름 */}
+      <div className="bg-navy px-5 py-16 text-center text-white md:py-20">
+        <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/50">{section.en}</p>
+        <p className="mt-3 text-4xl font-extrabold md:text-5xl">{section.label}</p>
+      </div>
 
-      <div className="mt-10 grid gap-8 md:grid-cols-[200px_1fr]">
-        {/* 같은 메뉴의 다른 페이지 */}
-        <aside>
-          <p className="mb-3 border-b-4 border-gold pb-2 text-lg font-bold text-navy">{section.label}</p>
-          <ul className="flex flex-wrap gap-2 md:block md:space-y-1">
-            {section.pages.map((p) => (
-              <li key={p.slug}>
-                <Link
-                  href={pageHref(p)}
-                  className={`block rounded-lg px-3 py-2 ${p.slug === slug ? "bg-navy text-white" : "text-navy/70 hover:bg-cream"}`}
-                >
-                  {p.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </aside>
+      {/* 같은 메뉴의 다른 페이지: 가운데 정렬 탭, | 구분 */}
+      <nav className="border-b border-navy/10 bg-[#f1f4e4]">
+        <ul className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-y-1 px-5 py-4 text-[15px] font-bold md:text-[17px]">
+          {section.pages.map((p, i) => (
+            <li key={p.slug} className="flex items-center">
+              {i > 0 && <span className="mx-3 h-3.5 w-px bg-navy/30 md:mx-4" />}
+              <Link
+                href={pageHref(p)}
+                className={p.slug === slug ? "text-gold" : "text-navy hover:text-gold"}
+              >
+                {p.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-        <section className="rounded-3xl bg-white p-8 leading-8 text-navy/80 md:p-12">
+      <div className="mx-auto max-w-5xl px-5 py-16 md:py-24">
+        {/* 페이지 제목 */}
+        <div className="mb-14 text-center">
+          <h1 className="text-4xl font-extrabold text-navy md:text-5xl">{page.title}</h1>
+          <span className="mx-auto mt-5 block h-1 w-10 bg-gold" />
+          <p className="mt-4 text-sm text-navy/40">
+            홈 &gt; {section.label} &gt; {page.title}
+          </p>
+        </div>
+
+        <section className="leading-8 text-navy/80 md:text-[17px]">
           {page.kind === "board" ? (
             <>
               <div className="grid grid-cols-[60px_1fr_100px] border-y-2 border-navy py-3 text-center text-sm font-bold text-navy">
@@ -55,7 +67,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
             </>
           ) : (
             <>
-              {page.lead && <p className="mb-6 text-2xl font-bold text-gold md:text-3xl">{page.lead}</p>}
+              {page.lead && <p className="mb-10 text-center text-2xl font-bold text-gold md:text-3xl">{page.lead}</p>}
               {page.video && (
                 <div className="aspect-video overflow-hidden rounded-2xl">
                   <iframe
@@ -102,6 +114,30 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
                   ))}
                 </div>
               )}
+              {page.places?.map(([floor, rooms]) => (
+                <div key={floor} className="mb-14">
+                  <h2 className="mb-6 border-b-2 border-navy pb-3 text-2xl font-extrabold text-navy">{floor}</h2>
+                  <div className="grid gap-x-6 gap-y-8 sm:grid-cols-2 md:grid-cols-3">
+                    {rooms.flatMap(([name, nums]) =>
+                      nums.map((n, i) => (
+                        <figure key={n}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={`/info/facility-${n}.jpg`}
+                            alt={name}
+                            loading="lazy"
+                            className="aspect-[3/2] w-full rounded-xl object-cover"
+                          />
+                          <figcaption className="mt-3 font-bold text-navy">
+                            {name}
+                            {nums.length > 1 && <span className="ml-1 font-normal text-navy/40">{i + 1}</span>}
+                          </figcaption>
+                        </figure>
+                      )),
+                    )}
+                  </div>
+                </div>
+              ))}
               {page.groups && (
                 <div className="grid gap-4 sm:grid-cols-2">
                   {page.groups.map((g) => (
