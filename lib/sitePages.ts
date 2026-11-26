@@ -67,16 +67,15 @@ export const SECTIONS: Section[] = [
         slug: "servants",
         title: "섬기는사람들",
         kind: "page",
-        // 이름은 원본 사이트에서 암호화되어 있어 확인된 분만 표기 — 필요하면 name 을 채워주세요
         people: [
           { role: "담임목사", name: "김준영 목사", img: "/info/people-1.jpg" },
-          { role: "부목사", img: "/info/people-2.jpg" },
-          { role: "부목사", img: "/info/people-3.png" },
-          { role: "교육전도사", img: "/info/people-4.jpg" },
-          { role: "당회원", img: "/info/people-5.jpg" },
-          { role: "당회원", img: "/info/people-6.jpg" },
-          { role: "당회원", img: "/info/people-7.jpg" },
-          { role: "당회원", img: "/info/people-8.jpg" },
+          { role: "부목사", name: "박충진 목사", img: "/info/people-2.jpg" },
+          { role: "부목사", name: "이강식 목사", img: "/info/people-3.png" },
+          { role: "교육전도사", name: "김미승 전도사", img: "/info/people-4.jpg" },
+          { role: "당회원", name: "윤보수 시무장로", img: "/info/people-5.jpg" },
+          { role: "당회원", name: "임성원 시무장로", img: "/info/people-6.jpg" },
+          { role: "당회원", name: "최명진 시무장로", img: "/info/people-7.jpg" },
+          { role: "당회원", name: "윤덕종 시무장로", img: "/info/people-8.jpg" },
         ],
       },
       {
