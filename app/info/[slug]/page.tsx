@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { SECTIONS, findPage, pageHref } from "@/lib/sitePages";
 import { HISTORY } from "@/lib/history";
 import Greeting from "./Greeting";
+import Worship from "./Worship";
 
 export function generateStaticParams() {
   return SECTIONS.flatMap((s) => s.pages.filter((p) => !p.href).map((p) => ({ slug: p.slug })));
@@ -57,7 +58,9 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
         </div>
 
         <section className="leading-8 text-navy/80 md:text-[17px]">
-          {slug === "greeting" ? (
+          {slug === "worship" ? (
+            <Worship />
+          ) : slug === "greeting" ? (
             <Greeting />
           ) : page.kind === "board" ? (
             <>
