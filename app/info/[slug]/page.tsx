@@ -31,11 +31,11 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
       </div>
 
       {/* 같은 메뉴의 다른 페이지: 가운데 정렬 탭, | 구분 */}
-      <nav className="border-b border-navy/10 bg-[#f1f4e4]">
-        <ul className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-y-1 px-5 py-4 text-[15px] font-bold md:text-[17px]">
+      <nav className="overflow-x-auto border-b border-navy/10 bg-[#f1f4e4]">
+        <ul className="mx-auto flex w-max items-center whitespace-nowrap px-5 py-4 text-[15px] font-bold lg:text-[17px]">
           {section.pages.map((p, i) => (
             <li key={p.slug} className="flex items-center">
-              {i > 0 && <span className="mx-3 h-3.5 w-px bg-navy/30 md:mx-4" />}
+              {i > 0 && <span className="mx-2.5 h-3.5 w-px bg-navy/30 lg:mx-4" />}
               <Link
                 href={pageHref(p)}
                 className={p.slug === slug ? "text-gold" : "text-navy hover:text-gold"}
