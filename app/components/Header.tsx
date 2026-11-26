@@ -13,6 +13,17 @@ const menus = SECTIONS.map((s) => ({
   sub: s.pages.map((p) => [p.title, pageHref(p)] as const),
 }));
 
+// 교회소개 · 소개영상: 640×480 새 창으로 소개영상 열기
+const INTRO_VIDEO = "https://www.youtube.com/embed/k7JFgEva4Ko?autoplay=1&rel=0";
+const POPUP = new Set(["교회소개", "다산교회 소개영상"]);
+function openIntro(e: React.MouseEvent) {
+  const w = window.open(INTRO_VIDEO, "dasanIntro", "width=640,height=480,left=200,top=150");
+  if (w) {
+    e.preventDefault();
+    w.focus();
+  }
+}
+
 export default function Header() {
   const [open, setOpen] = useState(false);
 
@@ -40,14 +51,14 @@ export default function Header() {
           <ul className="flex gap-1">
             {menus.map((m) => (
               <li key={m.label} className="group relative">
-                <a href={m.href} className="block rounded-full px-4 py-2 text-[15px] font-medium text-navy hover:bg-cream">
+                <a href={m.href} onClick={POPUP.has(m.label) ? openIntro : undefined} className="block rounded-full px-4 py-2 text-[15px] font-medium text-navy hover:bg-cream">
                   {m.label}
                 </a>
                 <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition group-hover:visible group-hover:opacity-100">
                   <ul className="w-56 rounded-2xl border border-navy/5 bg-white p-2 shadow-xl">
                     {m.sub.map(([t, h]) => (
                       <li key={t}>
-                        <a href={h} className="block rounded-xl px-4 py-2.5 font-semibold text-navy hover:bg-cream">
+                        <a href={h} onClick={POPUP.has(t) ? openIntro : undefined} className="block rounded-xl px-4 py-2.5 font-semibold text-navy hover:bg-cream">
                           {t}
                         </a>
                       </li>
@@ -82,7 +93,13 @@ export default function Header() {
             <div key={m.label} className="border-b border-navy/10 py-4">
               <p className="text-lg font-bold text-navy">{m.label}</p>
               {m.sub.map(([t, h]) => (
-                <a key={t} href={h} onClick={() => setOpen(false)} className="mt-2 block text-navy/60">
+                <a
+                  key={t}
+                  href={h}
+                  onClick={(e) => {
+                    if (POPUP.has(t)) openIntro(e);
+                    setOpen(false);
+                  }} className="mt-2 block text-navy/60">
                   {t}
                 </a>
               ))}
