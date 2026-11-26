@@ -13,8 +13,8 @@ const menus = SECTIONS.map((s) => ({
   sub: s.pages.map((p) => [p.title, pageHref(p)] as const),
 }));
 
-// 교회소개: 새 창으로 교회소개 페이지 열기
-const POPUP = new Set(["교회소개"]);
+// 상단 메뉴(교회소개·말씀.찬양·다음세대·교제.소식): 새 창으로 첫 페이지 열기
+const POPUP = new Set(SECTIONS.map((s) => s.label));
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
   const w = window.open(e.currentTarget.href, "dasanIntro", "width=860,height=640,left=100,top=50,scrollbars=yes,resizable=yes");
   if (w) {
