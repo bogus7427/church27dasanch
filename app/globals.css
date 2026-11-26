@@ -91,3 +91,8 @@ body::before {
   animation: blob 14s ease-in-out infinite;
   filter: blur(70px);
 }
+
+/* 교회소개 새 창: 헤더 숨김 */
+.popup body > header {
+  display: none;
+}

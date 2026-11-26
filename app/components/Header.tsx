@@ -16,7 +16,7 @@ const menus = SECTIONS.map((s) => ({
 // 교회소개: 새 창으로 교회소개 페이지 열기
 const POPUP = new Set(["교회소개"]);
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
-  const w = window.open(e.currentTarget.href, "dasanIntro", "width=1200,height=850,left=100,top=50,scrollbars=yes,resizable=yes");
+  const w = window.open(e.currentTarget.href, "dasanIntro", "width=860,height=640,left=100,top=50,scrollbars=yes,resizable=yes");
   if (w) {
     e.preventDefault();
     w.focus();

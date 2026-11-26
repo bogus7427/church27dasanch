@@ -16,8 +16,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ko" className={`${display.variable} ${body.variable} ${btn.variable} h-full antialiased`}>
+    <html lang="ko" suppressHydrationWarning className={`${display.variable} ${body.variable} ${btn.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        {/* 교회소개 새 창(dasanIntro)에서는 헤더 숨김 — 화면 그리기 전에 표시 */}
+        <script dangerouslySetInnerHTML={{ __html: `if(window.name==="dasanIntro")document.documentElement.classList.add("popup")` }} />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
