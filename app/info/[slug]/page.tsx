@@ -18,7 +18,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
   const f = findPage(slug);
   if (!f) notFound();
   const { section, page } = f;
-  const empty = !page.body && !page.info && !page.groups && !page.history && !page.video;
+  const empty = !page.body && !page.info && !page.groups && !page.history && !page.video && !page.people;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-16">
@@ -87,6 +87,20 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
                     </li>
                   ))}
                 </ol>
+              )}
+              {page.people && (
+                <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+                  {page.people.map((p) => (
+                    <figure key={p.img} className="text-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={p.img} alt={p.name ?? p.role} loading="lazy" className="aspect-[3/4] w-full rounded-2xl object-cover" />
+                      <figcaption className="mt-3">
+                        <p className="text-sm text-gold">{p.role}</p>
+                        {p.name && <p className="font-bold text-navy">{p.name}</p>}
+                      </figcaption>
+                    </figure>
+                  ))}
+                </div>
               )}
               {page.groups && (
                 <div className="grid gap-4 sm:grid-cols-2">

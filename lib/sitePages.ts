@@ -18,6 +18,7 @@ export type SubPage = {
   images?: string[];
   video?: string; // 유튜브 ID
   history?: boolean; // 연혁 타임라인
+  people?: { role: string; name?: string; img: string }[];
   map?: boolean;
 };
 
@@ -65,11 +66,16 @@ export const SECTIONS: Section[] = [
         slug: "servants",
         title: "섬기는사람들",
         kind: "page",
-        info: [
-          ["담임목사", "김준영 목사"],
-          ["교육목사", "박충진 목사"],
-          ["청년부 지도", "권용태 목사"],
-          ["교육전도사", "김미승 전도사"],
+        // 이름은 원본 사이트에서 암호화되어 있어 확인된 분만 표기 — 필요하면 name 을 채워주세요
+        people: [
+          { role: "담임목사", name: "김준영 목사", img: "/info/people-1.jpg" },
+          { role: "부목사", img: "/info/people-2.jpg" },
+          { role: "부목사", img: "/info/people-3.png" },
+          { role: "교육전도사", img: "/info/people-4.jpg" },
+          { role: "당회원", img: "/info/people-5.jpg" },
+          { role: "당회원", img: "/info/people-6.jpg" },
+          { role: "당회원", img: "/info/people-7.jpg" },
+          { role: "당회원", img: "/info/people-8.jpg" },
         ],
       },
       {
