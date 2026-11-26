@@ -233,7 +233,7 @@ export const SECTIONS: Section[] = [
           ["부장", "이현주 집사"],
           ["교사", "이현주, 이경희, 김영애, 김혜정, 이은주, 장윤정, 전앵란, 김진주, 김신영, 김은솔, 정예은"],
         ],
-        images: Array.from({ length: 5 }, (_, i) => `/info/kinder-${i + 1}.jpg`),
+        images: [...Array.from({ length: 5 }, (_, i) => `/info/kinder-${i + 1}.jpg`), "/info/kinder-6.png", "/info/kinder-7.png"],
       },
       {
         slug: "children",
@@ -252,6 +252,7 @@ export const SECTIONS: Section[] = [
           ["반주", "김신혜 교사"],
           ["교사", "김명숙, 이현주, 김신혜, 오명희, 임충만, 오옥희, 박정희, 김지은, 김영희b, 강정은, 정형우"],
         ],
+        images: ["/info/children-1.png", "/info/children-2.png"],
       },
       {
         slug: "teens",
@@ -267,6 +268,7 @@ export const SECTIONS: Section[] = [
           ["부장", "이명희 권사"],
           ["교사", "이명희, 이상윤, 정문기, 배희원, 송유훈, 이종민, 지현, 김은정, 이경화, 임예정, 한경애, 이연희"],
         ],
+        images: ["/info/teens-2.png", "/info/teens-3.jpg", "/info/teens-4.jpg", "/info/teens-5.jpg"],
       },
       {
         slug: "youth",
@@ -289,6 +291,7 @@ export const SECTIONS: Section[] = [
           ["회계", "김신혜 청년"],
           ["서기", "강정언 청년"],
         ],
+        images: Array.from({ length: 5 }, (_, i) => `/info/youth-${i + 1}.jpg`),
       },
     ],
   },
