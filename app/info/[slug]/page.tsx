@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { SECTIONS, findPage, pageHref } from "@/lib/sitePages";
 import { HISTORY } from "@/lib/history";
+import Greeting from "./Greeting";
 
 export function generateStaticParams() {
   return SECTIONS.flatMap((s) => s.pages.filter((p) => !p.href).map((p) => ({ slug: p.slug })));
@@ -56,7 +57,9 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
         </div>
 
         <section className="leading-8 text-navy/80 md:text-[17px]">
-          {page.kind === "board" ? (
+          {slug === "greeting" ? (
+            <Greeting />
+          ) : page.kind === "board" ? (
             <>
               <div className="grid grid-cols-[60px_1fr_100px] border-y-2 border-navy py-3 text-center text-sm font-bold text-navy">
                 <span>번호</span>
