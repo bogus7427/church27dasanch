@@ -33,7 +33,7 @@ export default function VideoBoard({ videos, channelUrl }: { videos: BoardVideo[
   return (
     <>
       {/* FEATURED: 영상 + 설명 2단 */}
-      <section id="featured" className="mx-auto grid max-w-6xl scroll-mt-20 items-center gap-10 px-5 py-24 md:grid-cols-[1.4fr_1fr] md:gap-16">
+      <section id="featured" className="mx-auto grid max-w-6xl scroll-mt-20 items-center gap-10 px-5 pb-24 pt-4 md:grid-cols-[1.4fr_1fr] md:gap-16">
         <div>
           <Player key={cur.yt} id={cur.yt} title={cur.title} />
           <div className="mt-6 flex items-center gap-3" aria-label="영상 위치">

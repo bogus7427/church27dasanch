@@ -1,4 +1,4 @@
-import SectionNav from "@/app/components/SectionNav";
+import SectionNav, { PageTitle } from "@/app/components/SectionNav";
 import { notFound } from "next/navigation";
 import { SECTIONS, findPage } from "@/lib/sitePages";
 import { HISTORY } from "@/lib/history";
@@ -19,7 +19,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const f = findPage(slug);
   if (!f) notFound();
-  const { section, page } = f;
+  const { page } = f;
   const empty = !page.body && !page.info && !page.groups && !page.history && !page.video && !page.people && !page.places;
 
   return (
@@ -28,13 +28,7 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
 
       <div className="mx-auto max-w-5xl px-5 py-16 md:py-24">
         {/* 페이지 제목 */}
-        <div id="content" className="mb-14 scroll-mt-6 text-center">
-          <h1 className="text-4xl font-extrabold text-navy md:text-5xl">{page.title}</h1>
-          <span className="mx-auto mt-5 block h-1 w-10 bg-gold" />
-          <p className="mt-4 text-sm text-navy/40">
-            홈 &gt; {section.label} &gt; {page.title}
-          </p>
-        </div>
+        <PageTitle slug={slug} />
 
         <section className="leading-8 text-navy/80 md:text-[17px]">
           {slug === "worship" ? (
