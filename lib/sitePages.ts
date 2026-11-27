@@ -309,8 +309,8 @@ export const SECTIONS: Section[] = [
   },
 ];
 
-// 소개영상은 어디서 눌러도 제목·영상 위치(#content)로 바로
-const HASH: Record<string, string> = { "intro-video": "#content" };
+// 소개영상·인사말은 어디서 눌러도 제목 위치(#content)로 바로
+const HASH: Record<string, string> = { "intro-video": "#content", greeting: "#content" };
 export const pageHref = (p: SubPage) => p.href ?? `/info/${p.slug}${HASH[p.slug] ?? ""}`;
 
 export function findPage(slug: string) {
