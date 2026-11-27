@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import SectionNav from "@/app/components/SectionNav";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -35,6 +36,8 @@ export default function NewcomerPage() {
   }
 
   return (
+    <>
+    <SectionNav slug="newcomer" />
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-5 py-16">
       <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-[0_40px_80px_-30px_rgba(22,56,79,0.3)]">
         <div className="bg-gold px-8 pb-5 pt-6 text-white">
@@ -110,5 +113,6 @@ export default function NewcomerPage() {
         )}
       </div>
     </div>
+    </>
   );
 }

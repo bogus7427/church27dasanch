@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getChannelVideos, getVideos, youtubeId, YOUTUBE_CHANNEL_URL } from "@/lib/queries";
 import { IMG } from "@/lib/images";
+import SectionNav from "@/app/components/SectionNav";
 import VideoBoard, { type BoardVideo } from "./VideoBoard";
 
 export const metadata: Metadata = { title: "DASAN TV | 다산교회" };
@@ -18,6 +19,8 @@ export default async function VideoPage() {
     .map((v) => ({ ...v, date: fmt(v.date) }));
 
   return (
+    <>
+    <SectionNav slug="sermon" />
     <div className="bg-white text-[#16384f]">
       {/* HERO: 큰 사진 + 짧은 문장 + 텍스트 링크 */}
       <section
@@ -58,5 +61,6 @@ export default async function VideoPage() {
         </a>
       </section>
     </div>
+    </>
   );
 }

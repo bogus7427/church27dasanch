@@ -13,18 +13,20 @@ const menus = SECTIONS.map((s) => ({
   sub: s.pages.map((p) => [p.title, pageHref(p)] as const),
 }));
 
-// 상단 메뉴(교회소개·말씀.찬양·다음세대·교제.소식): 새 창으로 첫 페이지 열기
-const POPUP = new Set(SECTIONS.map((s) => s.label));
+// 상단 메뉴와 하위 목록: 모두 새 창으로 열기
+const POPUP = new Set(SECTIONS.flatMap((s) => [s.label, ...s.pages.map((p) => p.title)]));
+// 소개영상은 배너를 건너뛰고 제목·영상 위치로 바로
+const POPUP_HASH: Record<string, string> = { "/info/intro-video": "#content" };
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
   // 화면 비율로 위치·크기 지정 (왼쪽 14% · 위 1.5%, 너비 75% · 높이 88%)
   const W = screen.availWidth;
   const H = screen.availHeight;
   const size = `width=${Math.round(W * 0.75)},height=${Math.round(H * 0.88)},left=${Math.round(W * 0.137)},top=${Math.round(H * 0.016)}`;
-  const w = window.open(e.currentTarget.href, "dasanIntro", `${size},scrollbars=yes,resizable=yes`);
-  if (w) {
-    e.preventDefault();
-    w.focus();
-  }
+  const w = window.open(e.currentTarget.href + (POPUP_HASH[e.currentTarget.pathname] ?? ""), "dasanIntro", `${size},scrollbars=yes,resizable=yes`);
+  // 뒤의 메인 화면은 절대 이동하지 않음 (팝업이 막혀도)
+  e.preventDefault();
+  if (w) w.focus();
+  else alert("팝업이 차단되어 새 창을 열 수 없습니다. 주소창 오른쪽에서 이 사이트의 팝업을 허용해주세요.");
 }
 
 export default function Header() {

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import SectionNav from "@/app/components/SectionNav";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
@@ -23,6 +24,8 @@ export default function BoardPage() {
   const list = (posts ?? []).filter((p) => cat === "전체" || p.category === cat);
 
   return (
+    <>
+    <SectionNav slug="news" />
     <div className="mx-auto max-w-4xl px-5 py-20">
       <h1 className="text-5xl text-navy">게시판</h1>
       <p className="mt-3 text-navy/60">다산교회의 이야기와 나눔. 로그인하면 댓글을 남길 수 있어요.</p>
@@ -54,5 +57,6 @@ export default function BoardPage() {
         ))}
       </ul>
     </div>
+    </>
   );
 }

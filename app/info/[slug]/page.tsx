@@ -1,6 +1,6 @@
-import Link from "next/link";
+import SectionNav from "@/app/components/SectionNav";
 import { notFound } from "next/navigation";
-import { SECTIONS, findPage, pageHref } from "@/lib/sitePages";
+import { SECTIONS, findPage } from "@/lib/sitePages";
 import { HISTORY } from "@/lib/history";
 import Greeting from "./Greeting";
 import Worship from "./Worship";
@@ -24,32 +24,11 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="bg-white">
-      {/* 상단 배너: 메뉴 이름 */}
-      <div className="bg-navy px-5 py-16 text-center text-white md:py-20">
-        <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/50">{section.en}</p>
-        <p className="mt-3 text-4xl font-extrabold md:text-5xl">{section.label}</p>
-      </div>
-
-      {/* 같은 메뉴의 다른 페이지: 가운데 정렬 탭, | 구분 */}
-      <nav className="overflow-x-auto border-b border-navy/10 bg-[#f1f4e4]">
-        <ul className="mx-auto flex w-max items-center whitespace-nowrap px-5 py-4 text-[15px] font-bold lg:text-[17px]">
-          {section.pages.map((p, i) => (
-            <li key={p.slug} className="flex items-center">
-              {i > 0 && <span className="mx-2.5 h-3.5 w-px bg-navy/30 lg:mx-4" />}
-              <Link
-                href={pageHref(p)}
-                className={p.slug === slug ? "text-gold" : "text-navy hover:text-gold"}
-              >
-                {p.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <SectionNav slug={slug} />
 
       <div className="mx-auto max-w-5xl px-5 py-16 md:py-24">
         {/* 페이지 제목 */}
-        <div className="mb-14 text-center">
+        <div id="content" className="mb-14 scroll-mt-6 text-center">
           <h1 className="text-4xl font-extrabold text-navy md:text-5xl">{page.title}</h1>
           <span className="mx-auto mt-5 block h-1 w-10 bg-gold" />
           <p className="mt-4 text-sm text-navy/40">
