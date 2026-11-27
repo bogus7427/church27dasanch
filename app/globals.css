@@ -106,3 +106,8 @@ body::before {
 .popup .section-banner {
   display: none;
 }
+
+/* 새 창: 아래쪽 footer 숨김 */
+.popup body > footer {
+  display: none;
+}
