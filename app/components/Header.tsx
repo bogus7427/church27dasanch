@@ -16,6 +16,8 @@ const menus = SECTIONS.map((s) => ({
 // 상단 메뉴와 하위 목록: 모두 새 창으로 열기
 const POPUP = new Set(SECTIONS.flatMap((s) => [s.label, ...s.pages.map((p) => p.title)]));
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
+  // 핸드폰·태블릿(터치 화면)은 새 창 대신 그냥 이동 — 위쪽 메뉴로 메인에 돌아갈 수 있게
+  if (matchMedia("(pointer: coarse)").matches) return;
   // 화면 비율로 위치·크기 지정 (왼쪽 14% · 맨 위, 너비 75% · 높이 93% = 제목줄·주소창 포함 화면 아래 끝까지)
   const W = screen.availWidth;
   const H = screen.availHeight;
