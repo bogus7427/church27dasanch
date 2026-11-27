@@ -5,6 +5,7 @@ import { HISTORY } from "@/lib/history";
 import Greeting from "./Greeting";
 import Worship from "./Worship";
 import NextGen from "./NextGen";
+import Mission from "./Mission";
 import Bulletin from "./Bulletin";
 
 // 기존 홈페이지에서 가져온 글을 보여주는 메뉴 → posts 표의 분류
@@ -40,6 +41,8 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
             <Bulletin category={BOARD_CATEGORY[slug]} />
           ) : ["kinder", "children", "teens", "youth"].includes(slug) ? (
             <NextGen page={page} />
+          ) : slug === "domestic" || slug === "overseas" ? (
+            <Mission page={page} />
           ) : slug === "worship" ? (
             <Worship />
           ) : slug === "greeting" ? (
