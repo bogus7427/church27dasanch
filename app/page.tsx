@@ -1,6 +1,7 @@
 import { getChannelVideos, getHomeData, youtubeId, YOUTUBE_CHANNEL_URL } from "@/lib/queries";
 import VideoCoverflow, { type CoverVideo } from "./components/VideoCoverflow";
 import { IMG } from "@/lib/images";
+import { WEEKLY } from "@/lib/weekly";
 import Image from "next/image";
 import TypingText from "./components/TypingText";
 
@@ -44,7 +45,8 @@ const nextGen = [
 ];
 
 export default async function Home() {
-  const [{ worships, news }, channel] = await Promise.all([getHomeData(), getChannelVideos()]);
+  const [{ worships, news, sermons }, channel] = await Promise.all([getHomeData(), getChannelVideos()]);
+  const week = sermons[0]; // 가장 최근 주일 설교 (주보 말씀과 같음)
   const cover: CoverVideo[] = channel
     .slice(0, 9)
     .map((v) => ({ yt: youtubeId(v.video_url) ?? "", title: v.title, date: fmt(v.preached_at) }))
@@ -91,13 +93,17 @@ export default async function Home() {
             </p>
           </div>
           <div className="grid gap-4">
-            <div
-              className="relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-navy bg-cover bg-center p-7 text-left text-white"
-              style={{ backgroundImage: `linear-gradient(to top, rgba(22,56,79,.92), rgba(22,56,79,.2)), url(${IMG.bibleRead})` }}
+            <a
+              href="/video"
+              className="relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-navy bg-cover bg-center p-7 text-left text-white transition hover:brightness-110"
+              style={{ backgroundImage: `linear-gradient(to top, rgba(22,56,79,.95), rgba(22,56,79,.25)), url(${IMG.bibleRead})` }}
             >
-              <p className="text-sm text-white/60">이번 주 말씀</p>
-              <p className="mt-1 text-xl font-bold">{cover[0]?.title ?? "주일 설교"}</p>
-            </div>
+              <p className="text-sm text-white/60">
+                이번 주 말씀{week && <> · {fmt(week.preached_at, false)}</>}
+              </p>
+              <p className="mt-1 text-xl font-bold">“{week?.title ?? cover[0]?.title ?? "주일 설교"}”</p>
+              {week?.verse && <p className="mt-1 text-sm text-white/75">{week.verse} · 김준영 목사</p>}
+            </a>
             <div
               className="flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-olive bg-cover bg-center p-7 text-left text-white"
               style={{ backgroundImage: `linear-gradient(to top, rgba(63,165,138,.95), rgba(63,165,138,.3)), url(${IMG.cross})` }}
@@ -107,6 +113,13 @@ export default async function Home() {
             </div>
           </div>
         </div>
+
+        {/* 이번 주 암송말씀 (주보) */}
+        <figure className="relative mx-auto mt-4 max-w-6xl rounded-[2rem] bg-white/80 px-8 py-8 text-center md:px-16">
+          <figcaption className="text-sm font-bold tracking-widest text-gold">이번 주 암송말씀</figcaption>
+          <blockquote className="mt-3 text-lg leading-8 text-navy md:text-xl">“{WEEKLY.memory}”</blockquote>
+          <p className="mt-2 text-sm text-navy/50">{WEEKLY.memoryRef}</p>
+        </figure>
       </section>
 
       {/* About */}
