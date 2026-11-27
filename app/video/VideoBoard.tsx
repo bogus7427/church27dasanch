@@ -17,6 +17,7 @@ const tones = [
 
 export default function VideoBoard({ videos, channelUrl }: { videos: BoardVideo[]; channelUrl: string }) {
   const [sel, setSel] = useState(0);
+  const [shown, setShown] = useState(20);
   const cur = videos[sel];
 
   if (!cur) {
@@ -93,7 +94,7 @@ export default function VideoBoard({ videos, channelUrl }: { videos: BoardVideo[
           </a>
         </div>
         <ul className="grid gap-3 md:grid-cols-2">
-          {videos.map((v, i) => {
+          {videos.slice(0, shown).map((v, i) => {
             const t = tones[i % tones.length];
             const active = i === sel;
             return (
@@ -126,6 +127,16 @@ export default function VideoBoard({ videos, channelUrl }: { videos: BoardVideo[
             );
           })}
         </ul>
+        {videos.length > shown && (
+          <div className="mt-10 text-center">
+            <button
+              onClick={() => setShown((n) => n + 20)}
+              className="rounded-full border border-[#16384f]/20 px-10 py-3 text-sm text-[#16384f] hover:border-[#16384f]"
+            >
+              더 보기 ({shown} / {videos.length})
+            </button>
+          </div>
+        )}
       </section>
     </>
   );

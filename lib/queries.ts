@@ -45,7 +45,7 @@ export async function getVideos() {
     .select("id,title,verse,video_url,preached_at")
     .not("video_url", "is", null)
     .order("preached_at", { ascending: false })
-    .limit(30);
+    .range(0, 999);
   if (error) console.error("[supabase]", error.message);
   return (data ?? []) as Sermon[];
 }
