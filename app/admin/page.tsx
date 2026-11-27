@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { shrinkImage } from "@/lib/shrinkImage";
 import { ROLE_LABEL, useProfile, type Role } from "@/lib/useProfile";
 
 // ─── 테이블 설정: 여기만 고치면 관리자 화면 항목이 바뀝니다 ───────────────
@@ -263,9 +264,10 @@ function Editor({ cfg, row, onClose, onSaved }: { cfg: TableCfg; row: Row; onClo
   const [err, setErr] = useState("");
   const isNew = row.id === "new";
 
-  async function upload(key: string, file: File) {
+  async function upload(key: string, original: File) {
     setBusy(true);
     setErr("");
+    const file = await shrinkImage(original); // 용량 절약: 긴 쪽 1280px JPEG로 줄여서 저장
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${ext}`;
     const { error } = await supabase.storage.from("photos").upload(path, file, { contentType: file.type });
