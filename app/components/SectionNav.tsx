@@ -10,7 +10,7 @@ export default function SectionNav({ slug }: { slug: string }) {
   return (
     <>
       <ScrollToHash />
-      <div className="bg-navy px-5 py-16 text-center text-white md:py-20">
+      <div className="section-banner bg-navy px-5 py-16 text-center text-white md:py-20">
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/50">{section.en}</p>
         <p className="mt-3 text-4xl font-extrabold md:text-5xl">{section.label}</p>
       </div>

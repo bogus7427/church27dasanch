@@ -101,3 +101,8 @@ body::before {
 .popup .section-tabs {
   top: 0;
 }
+
+/* 새 창: 메뉴 이름 배너 숨김 (탭 줄만) */
+.popup .section-banner {
+  display: none;
+}
