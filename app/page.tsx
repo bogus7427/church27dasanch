@@ -84,10 +84,10 @@ export default async function Home() {
           <div className="hero-card group relative aspect-[4/3] overflow-hidden rounded-[2rem] md:col-span-2 md:aspect-auto" style={{ animationDelay: "0.1s" }}>
             <div className="hero-zoom absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${IMG.sanctuary})` }} />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e2d]/60 to-transparent" />
-            <p className="hero-text absolute bottom-7 left-7 text-left text-xl font-bold text-white md:text-2xl">
-              주님의 전에서
-              <br />
-              함께 예배해요
+            <p className="hero-text absolute bottom-7 left-7 whitespace-pre-line text-left text-xl font-bold text-white drop-shadow md:text-3xl">
+              {/* 자리 고정용(보이지 않음) + 그 위에 타자 치듯 한 글자씩 */}
+              <span className="invisible">{"주님의 전에서\n함께 예배해요"}</span>
+              <TypingText text={"주님의 전에서\n함께 예배해요"} speed={140} delay={900} hold={3500} className="absolute inset-0" />
             </p>
           </div>
           <div className="grid gap-4">
