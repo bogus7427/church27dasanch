@@ -18,12 +18,23 @@ export type Photo = {
 export async function getPhotos() {
   "use cache";
   cacheLife("minutes");
-  const { data, error } = await supabase
-    .from("photos")
-    .select("id,title,album,image_url,description,taken_at,featured")
-    .order("taken_at", { ascending: false });
-  if (error) console.error("[supabase]", error.message);
-  return (data ?? []) as Photo[];
+  // Supabase 는 한 번에 최대 1000줄 → 나눠서 전부 읽기
+  const all: Photo[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await supabase
+      .from("photos")
+      .select("id,title,album,image_url,description,taken_at,featured")
+      .order("taken_at", { ascending: false })
+      .order("id", { ascending: true })
+      .range(from, from + 999);
+    if (error) {
+      console.error("[supabase]", error.message);
+      break;
+    }
+    all.push(...((data ?? []) as Photo[]));
+    if (!data || data.length < 1000) break;
+  }
+  return all;
 }
 
 export async function getVideos() {

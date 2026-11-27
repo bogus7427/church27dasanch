@@ -4,11 +4,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Photo } from "@/lib/queries";
 
+const PAGE = 30;
 const fmt = (d: string) => d.slice(0, 10).replaceAll("-", ".");
 
 export default function Gallery({ photos }: { photos: Photo[] }) {
   const [filter, setFilter] = useState("ALL");
   const [active, setActive] = useState<number | null>(null);
+  const [shown, setShown] = useState(PAGE); // 사진이 많아서 30장씩 더 보기
 
   const albums = useMemo(() => ["ALL", ...new Set(photos.map((p) => p.album))], [photos]);
   const featured = photos.filter((p) => p.featured);
@@ -83,7 +85,10 @@ export default function Gallery({ photos }: { photos: Photo[] }) {
               {albums.map((a) => (
                 <button
                   key={a}
-                  onClick={() => setFilter(a)}
+                  onClick={() => {
+                    setFilter(a);
+                    setShown(PAGE);
+                  }}
                   className={`rounded-full border px-4 py-1.5 text-xs tracking-widest transition ${
                     filter === a ? "border-white bg-white text-black" : "border-white/20 text-white/60 hover:border-white/60"
                   }`}
@@ -95,7 +100,7 @@ export default function Gallery({ photos }: { photos: Photo[] }) {
           </div>
 
           <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {list.map((p, i) => (
+            {list.slice(0, shown).map((p, i) => (
               <button key={p.id} onClick={() => setActive(featured.length + i)} className="group text-left">
                 <div className="overflow-hidden">
                   <img
@@ -116,6 +121,16 @@ export default function Gallery({ photos }: { photos: Photo[] }) {
             ))}
           </div>
           {list.length === 0 && <p className="py-16 text-center text-white/40">이 앨범에 사진이 없습니다.</p>}
+          {list.length > shown && (
+            <div className="mt-16 text-center">
+              <button
+                onClick={() => setShown((n) => n + PAGE)}
+                className="rounded-full border border-white/30 px-10 py-3 text-sm tracking-[0.2em] text-white/80 hover:border-white hover:text-white"
+              >
+                더 보기 ({shown} / {list.length})
+              </button>
+            </div>
+          )}
         </section>
       )}
 
