@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SECTIONS, pageHref } from "@/lib/sitePages";
+import ScrollToHash from "./ScrollToHash";
 
 /** 하위 페이지 공통 상단: 메뉴 이름 배너 + 같은 메뉴의 탭 줄 (slug = 현재 페이지) */
 export default function SectionNav({ slug }: { slug: string }) {
@@ -8,6 +9,7 @@ export default function SectionNav({ slug }: { slug: string }) {
 
   return (
     <>
+      <ScrollToHash />
       <div className="bg-navy px-5 py-16 text-center text-white md:py-20">
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-white/50">{section.en}</p>
         <p className="mt-3 text-4xl font-extrabold md:text-5xl">{section.label}</p>
