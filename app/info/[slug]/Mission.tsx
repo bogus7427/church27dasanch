@@ -43,18 +43,69 @@ export default function Mission({ page }: { page: SubPage }) {
       )}
 
       {/* 사역·기관 묶음 */}
-      {page.groups?.map((g, gi) => (
-        <section key={g.h}>
-          <h2 className="mb-6 border-b-2 border-navy pb-3 text-2xl font-extrabold text-navy">{g.h}</h2>
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {g.lines.map((l) => (
-              <li key={l} className={`rounded-2xl px-5 py-4 text-navy ${tones[gi % tones.length]}`}>
-                {l}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      {page.groups?.map((g, gi) => {
+        // "나라 – 내용 (연도 …)" 줄이 있으면 나라별 지원 현황 카드
+        if (g.lines.some((l) => l.includes(" – "))) {
+          const byCountry = new Map<string, { t: string; y?: string }[]>();
+          for (const l of g.lines) {
+            const [c, rest] = l.split(" – ");
+            const m = rest?.match(/^(.*?)\s*\((\d{4}(?:\s*~\s*\d{0,4})?)\s*(.*?)\)$/);
+            const list = byCountry.get(c) ?? [];
+            if (rest) list.push(m ? { t: `${m[1]} ${m[3]}`.trim(), y: m[2] } : { t: rest });
+            byCountry.set(c, list);
+          }
+          return (
+            <section key={g.h}>
+              <h2 className="mb-6 border-b-2 border-navy pb-3 text-2xl font-extrabold text-navy">{g.h}</h2>
+              <div className="grid gap-5 md:grid-cols-2">
+                {[...byCountry].map(([c, items]) => (
+                  <div key={c} className="rounded-3xl border border-navy/10 bg-white p-7 shadow-[0_20px_40px_-25px_rgba(22,56,79,0.35)]">
+                    <p className="flex items-center gap-3">
+                      <span className="grid h-10 w-10 place-items-center rounded-full bg-gold text-lg text-white">🌏</span>
+                      <span className="text-2xl font-extrabold text-navy">{c}</span>
+                    </p>
+                    {items.length > 0 ? (
+                      <ol className="mt-6 space-y-4 border-l-2 border-gold/40 pl-5">
+                        {items.map((it) => (
+                          <li key={it.t} className="relative">
+                            <span className="absolute -left-[27px] top-2 h-3 w-3 rounded-full bg-gold" />
+                            {it.y && <span className="mr-2 text-sm font-bold text-gold">{it.y}</span>}
+                            <span className="text-navy">{it.t}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <p className="mt-6 text-navy/60">선교사역을 위해 기도와 후원으로 함께하고 있습니다.</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          );
+        }
+        // 사역·기관 목록: 번호 타일
+        const many = g.lines.length > 6;
+        return (
+          <section key={g.h}>
+            <h2 className="mb-6 border-b-2 border-navy pb-3 text-2xl font-extrabold text-navy">{g.h}</h2>
+            <ul className={`grid gap-4 sm:grid-cols-2 ${many ? "lg:grid-cols-3" : "lg:grid-cols-5"}`}>
+              {g.lines.map((l, i) => (
+                <li
+                  key={l}
+                  className={`flex items-center gap-4 rounded-3xl px-5 py-5 text-navy ${tones[gi % tones.length]} ${
+                    many ? "" : "lg:flex-col lg:justify-center lg:py-8 lg:text-center"
+                  }`}
+                >
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-sm font-extrabold text-gold shadow">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="font-bold leading-6">{l}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
 
       {/* 협력 교회 */}
       {page.info && (

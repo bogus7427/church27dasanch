@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Black_Han_Sans, Dongle, Jua } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import HomeButton from "./components/HomeButton";
 
 // 구글 폰트 (모두 SIL Open Font License - 무료, 상업적 사용 가능)
 const display = Black_Han_Sans({ variable: "--font-display-kr", weight: "400", subsets: ["latin"], display: "swap" }); // 굵은 제목
@@ -23,6 +25,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Suspense fallback={null}>
+          <HomeButton />
+        </Suspense>
       </body>
     </html>
   );
