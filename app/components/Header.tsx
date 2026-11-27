@@ -15,14 +15,15 @@ const menus = SECTIONS.map((s) => ({
 
 // 상단 메뉴와 하위 목록: 모두 새 창으로 열기
 const POPUP = new Set(SECTIONS.flatMap((s) => [s.label, ...s.pages.map((p) => p.title)]));
-// 인사말은 Welcome 위치로 바로 (소개영상 위치는 lib/sitePages.ts 링크에 포함)
-const POPUP_HASH: Record<string, string> = { "/info/greeting": "#greeting" };
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
   // 화면 비율로 위치·크기 지정 (왼쪽 14% · 위 1.5%, 너비 75% · 높이 88%)
   const W = screen.availWidth;
   const H = screen.availHeight;
   const size = `width=${Math.round(W * 0.75)},height=${Math.round(H * 0.88)},left=${Math.round(W * 0.137)},top=${Math.round(H * 0.016)}`;
-  const w = window.open(e.currentTarget.href + (POPUP_HASH[e.currentTarget.pathname] ?? ""), "dasanIntro", `${size},scrollbars=yes,resizable=yes`);
+  // 새 창은 항상 배너를 건너뛰고 탭 줄 바로 아래(제목)부터 보이게
+  const { href, hash } = e.currentTarget;
+  const url = hash ? href : `${href}#tabs`;
+  const w = window.open(url, "dasanIntro", `${size},scrollbars=yes,resizable=yes`);
   // 뒤의 메인 화면은 절대 이동하지 않음 (팝업이 막혀도)
   e.preventDefault();
   if (w) w.focus();

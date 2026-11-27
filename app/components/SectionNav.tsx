@@ -14,7 +14,7 @@ export default function SectionNav({ slug }: { slug: string }) {
       </div>
 
       {/* 같은 메뉴의 다른 페이지: 가운데 정렬 탭, | 구분 */}
-      <nav className="section-tabs sticky top-[104px] z-40 overflow-x-auto border-b border-navy/10 bg-[#f1f4e4]">
+      <nav id="tabs" className="section-tabs sticky top-[104px] z-40 overflow-x-auto border-b border-navy/10 bg-[#f1f4e4]">
         <ul className="mx-auto flex w-max items-center whitespace-nowrap px-5 py-4 text-[15px] font-bold lg:text-[17px]">
           {section.pages.map((p, i) => (
             <li key={p.slug} className="flex items-center">
