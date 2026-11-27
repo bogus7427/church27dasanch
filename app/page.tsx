@@ -204,9 +204,8 @@ export default async function Home() {
               ["#8fd5bf", "03", "알림 🔔 설정", "구독 후 종 모양을 ‘전체’로 바꾸면 주일 실시간 예배 알림이 옵니다."],
             ].map(([bg, n, t, d]) => (
               <div key={n} className="overflow-hidden rounded-2xl bg-white shadow-[0_20px_40px_-20px_rgba(22,56,79,0.25)]">
-                <div className="px-6 pb-3 pt-5" style={{ background: bg }}>
-                  <p className="text-xs font-bold text-black">({n})</p>
-                  <p className="mt-1 text-2xl font-black tracking-tight text-black">{t}</p>
+                <div className="px-6 py-5" style={{ background: bg }}>
+                  <p className="text-2xl font-black tracking-tight text-black">{t}</p>
                 </div>
                 <p className="px-6 py-5 text-sm leading-6 text-navy/70">{d}</p>
               </div>

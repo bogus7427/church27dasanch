@@ -15,7 +15,7 @@ export default function BoardPage() {
     supabase
       .from("posts")
       .select("id,category,title,author_name,views,created_at")
-      .not("category", "in", "(주보,다산칼럼,초청강의)") // 주보·다산칼럼·초청강의는 각 메뉴에서만
+      .not("category", "in", "(주보,다산칼럼,초청강의,특별행사)") // 주보·다산칼럼·초청강의·특별행사는 각 메뉴에서만
       .order("created_at", { ascending: false })
       .limit(200)
       .then(({ data }) => setPosts((data as Post[]) ?? []));

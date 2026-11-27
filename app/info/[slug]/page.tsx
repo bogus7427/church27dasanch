@@ -8,7 +8,7 @@ import NextGen from "./NextGen";
 import Bulletin from "./Bulletin";
 
 // 기존 홈페이지에서 가져온 글을 보여주는 메뉴 → posts 표의 분류
-const BOARD_CATEGORY: Record<string, string> = { bulletin: "주보", column: "다산칼럼", lecture: "초청강의" };
+const BOARD_CATEGORY: Record<string, string> = { bulletin: "주보", column: "다산칼럼", lecture: "초청강의", event: "특별행사" };
 
 export function generateStaticParams() {
   return SECTIONS.flatMap((s) => s.pages.filter((p) => !p.href).map((p) => ({ slug: p.slug })));
