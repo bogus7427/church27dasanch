@@ -4,7 +4,6 @@ import { IMG } from "@/lib/images";
 import { WEEKLY } from "@/lib/weekly";
 import Image from "next/image";
 import TypingText from "./components/TypingText";
-import WaveText from "./components/WaveText";
 
 const fmt = (d: string, full = true) => {
   const [y, m, day] = d.slice(0, 10).split("-");
@@ -64,9 +63,9 @@ export default async function Home() {
             Since 1907 · 경북 고령군 다산면
           </p>
           <h1 className="text-[2.9rem] font-extrabold leading-[1.1] tracking-tight text-navy sm:text-6xl md:text-7xl lg:text-8xl xl:text-[6.5rem]">
-            <WaveText text="하나님의" /> <WaveText text="기쁨이 되는" start={5} className="whitespace-nowrap" />
+            하나님의 <span className="whitespace-nowrap">기쁨이 되는</span>
             <br />
-            <WaveText text="행복한 다산교회" start={11} className="wave-shimmer whitespace-nowrap" />
+            <span className="text-gold">행복한 다산교회</span>
           </h1>
           <p className="mx-auto mt-8 max-w-2xl text-xl text-navy/60 md:text-2xl">
             “그들이 사도의 가르침을 받아 서로 교제하고 떡을 떼며 오로지 기도하기를 힘쓰니라”
