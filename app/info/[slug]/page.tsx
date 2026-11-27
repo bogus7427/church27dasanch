@@ -33,8 +33,8 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
         <PageTitle slug={slug} />
 
         <section className="leading-8 text-navy/80 md:text-[17px]">
-          {slug === "bulletin" ? (
-            <Bulletin />
+          {slug === "bulletin" || slug === "column" ? (
+            <Bulletin category={slug === "column" ? "다산칼럼" : "주보"} />
           ) : ["kinder", "children", "teens", "youth"].includes(slug) ? (
             <NextGen page={page} />
           ) : slug === "worship" ? (

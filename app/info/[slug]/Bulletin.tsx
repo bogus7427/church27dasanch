@@ -4,11 +4,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
-/** 주보: posts 표의 분류 '주보' 글. content 에 이미지 주소가 줄마다 들어 있음 */
+/** 주보·다산칼럼: posts 표의 해당 분류 글. content = 본문 + 이미지 줄 (주보는 주소만, 칼럼은 "[이미지] 주소") */
 type Row = { id: number; title: string; content: string | null; created_at: string };
 const PAGE = 20;
+const isImg = (l: string) => l.startsWith("[이미지] ") || /^https?:\/\/\S+\.(jpe?g|png|gif)$/i.test(l);
 
-export default function Bulletin() {
+export default function Bulletin({ category = "주보" }: { category?: string }) {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [open, setOpen] = useState<number | null>(null);
   const [shown, setShown] = useState(PAGE);
@@ -17,18 +18,18 @@ export default function Bulletin() {
     supabase
       .from("posts")
       .select("id,title,content,created_at")
-      .eq("category", "주보")
+      .eq("category", category)
       .order("created_at", { ascending: false })
       .range(0, 999)
       .then(({ data }) => {
         const list = (data as Row[]) ?? [];
         setRows(list);
-        if (list[0]) setOpen(list[0].id); // 최신 주보는 펼쳐서 보여줌
+        if (list[0]) setOpen(list[0].id); // 최신 글은 펼쳐서 보여줌
       });
-  }, []);
+  }, [category]);
 
   if (rows === null) return <p className="py-16 text-center text-navy/40">불러오는 중…</p>;
-  if (rows.length === 0) return <p className="py-16 text-center text-navy/40">등록된 주보가 없습니다.</p>;
+  if (rows.length === 0) return <p className="py-16 text-center text-navy/40">등록된 글이 없습니다.</p>;
 
   return (
     <div>
@@ -39,7 +40,9 @@ export default function Bulletin() {
       </div>
       <ul>
         {rows.slice(0, shown).map((r, i) => {
-          const imgs = (r.content ?? "").split("\n").filter(Boolean);
+          const lines = (r.content ?? "").split("\n");
+          const imgs = lines.filter(isImg).map((l) => l.replace("[이미지] ", ""));
+          const text = lines.filter((l) => !isImg(l)).join("\n").trim();
           const isOpen = open === r.id;
           return (
             <li key={r.id} className="border-b border-navy/10">
@@ -55,12 +58,13 @@ export default function Bulletin() {
               </button>
               {isOpen && (
                 <div className="space-y-4 bg-cream/50 p-4 md:p-6">
+                  {text && <p className="mx-auto max-w-3xl whitespace-pre-line rounded-xl bg-white p-6 leading-8 text-navy/80 md:p-8">{text}</p>}
                   {imgs.map((src, k) => (
                     <a key={src} href={src} target="_blank" rel="noreferrer" className="block">
                       <img src={src} alt={`${r.title} ${k + 1}`} loading="lazy" className="mx-auto w-full max-w-3xl rounded-xl shadow" />
                     </a>
                   ))}
-                  <p className="text-center text-xs text-navy/40">이미지를 누르면 크게 볼 수 있습니다.</p>
+                  {imgs.length > 0 && <p className="text-center text-xs text-navy/40">이미지를 누르면 크게 볼 수 있습니다.</p>}
                 </div>
               )}
             </li>
