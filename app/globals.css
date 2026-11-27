@@ -122,3 +122,14 @@ body::before {
 .hero-text { transition: transform .5s cubic-bezier(.2,.8,.2,1); }
 .hero-card:hover .hero-text { transform: translateX(8px); }
 @media (prefers-reduced-motion: reduce) { .hero-card, .hero-zoom { animation: none; } }
+
+/* 메인 큰 글씨 물결: 글자마다 차례로 출렁 + "행복한 다산교회" 색 물결 */
+@keyframes wave-bob { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-0.12em); } }
+.wave-char { display: inline-block; animation: wave-bob 2.6s ease-in-out infinite; }
+@keyframes wave-shine { to { background-position: 200% center; } }
+.wave-shimmer .wave-char {
+  background: linear-gradient(90deg, #0b8fc0, #3fa58a, #7fd0ea, #0b8fc0) 0 center / 200% auto;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: wave-bob 2.6s ease-in-out infinite, wave-shine 6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .wave-char, .wave-shimmer .wave-char { animation: none; } }

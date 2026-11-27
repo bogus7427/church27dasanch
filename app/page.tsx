@@ -4,6 +4,7 @@ import { IMG } from "@/lib/images";
 import { WEEKLY } from "@/lib/weekly";
 import Image from "next/image";
 import TypingText from "./components/TypingText";
+import WaveText from "./components/WaveText";
 
 const fmt = (d: string, full = true) => {
   const [y, m, day] = d.slice(0, 10).split("-");
@@ -63,9 +64,9 @@ export default async function Home() {
             Since 1907 · 경북 고령군 다산면
           </p>
           <h1 className="text-[2.9rem] font-extrabold leading-[1.1] tracking-tight text-navy sm:text-6xl md:text-7xl lg:text-8xl xl:text-[6.5rem]">
-            하나님의 <span className="whitespace-nowrap">기쁨이 되는</span>
+            <WaveText text="하나님의" /> <WaveText text="기쁨이 되는" start={5} className="whitespace-nowrap" />
             <br />
-            <span className="text-gold">행복한 다산교회</span>
+            <WaveText text="행복한 다산교회" start={11} className="wave-shimmer whitespace-nowrap" />
           </h1>
           <p className="mx-auto mt-8 max-w-2xl text-xl text-navy/60 md:text-2xl">
             “그들이 사도의 가르침을 받아 서로 교제하고 떡을 떼며 오로지 기도하기를 힘쓰니라”
@@ -83,8 +84,8 @@ export default async function Home() {
         <div className="relative mx-auto mt-20 grid max-w-6xl gap-4 md:grid-cols-3">
           <div className="hero-card group relative aspect-[4/3] overflow-hidden rounded-[2rem] md:col-span-2 md:aspect-auto" style={{ animationDelay: "0.1s" }}>
             <div className="hero-zoom absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${IMG.sanctuary})` }} />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e2d]/60 to-transparent" />
-            <p className="hero-text absolute bottom-7 left-7 whitespace-pre-line text-left text-xl font-bold text-white drop-shadow md:text-3xl">
+            <div className="absolute inset-0 bg-[#0a1e2d]/35" />
+            <p className="hero-text absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-pre text-center text-4xl font-extrabold leading-tight text-white [text-shadow:0_4px_24px_rgba(0,0,0,.55)] sm:text-5xl md:text-6xl lg:text-7xl">
               {/* 자리 고정용(보이지 않음) + 그 위에 타자 치듯 한 글자씩 */}
               <span className="invisible">{"주님의 전에서\n함께 예배해요"}</span>
               <TypingText text={"주님의 전에서\n함께 예배해요"} speed={140} delay={900} hold={3500} className="absolute inset-0" />
