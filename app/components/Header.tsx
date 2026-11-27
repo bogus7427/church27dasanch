@@ -15,8 +15,8 @@ const menus = SECTIONS.map((s) => ({
 
 // 상단 메뉴와 하위 목록: 모두 새 창으로 열기
 const POPUP = new Set(SECTIONS.flatMap((s) => [s.label, ...s.pages.map((p) => p.title)]));
-// 소개영상은 제목 위치, 인사말은 Welcome 위치로 바로
-const POPUP_HASH: Record<string, string> = { "/info/intro-video": "#content", "/info/greeting": "#greeting" };
+// 인사말은 Welcome 위치로 바로 (소개영상 위치는 lib/sitePages.ts 링크에 포함)
+const POPUP_HASH: Record<string, string> = { "/info/greeting": "#greeting" };
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
   // 화면 비율로 위치·크기 지정 (왼쪽 14% · 위 1.5%, 너비 75% · 높이 88%)
   const W = screen.availWidth;

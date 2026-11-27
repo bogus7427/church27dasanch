@@ -309,7 +309,9 @@ export const SECTIONS: Section[] = [
   },
 ];
 
-export const pageHref = (p: SubPage) => p.href ?? `/info/${p.slug}`;
+// 소개영상은 어디서 눌러도 제목·영상 위치(#content)로 바로
+const HASH: Record<string, string> = { "intro-video": "#content" };
+export const pageHref = (p: SubPage) => p.href ?? `/info/${p.slug}${HASH[p.slug] ?? ""}`;
 
 export function findPage(slug: string) {
   for (const s of SECTIONS) {
