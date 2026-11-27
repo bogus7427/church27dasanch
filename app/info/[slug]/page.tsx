@@ -5,6 +5,7 @@ import { HISTORY } from "@/lib/history";
 import Greeting from "./Greeting";
 import Worship from "./Worship";
 import NextGen from "./NextGen";
+import Bulletin from "./Bulletin";
 
 export function generateStaticParams() {
   return SECTIONS.flatMap((s) => s.pages.filter((p) => !p.href).map((p) => ({ slug: p.slug })));
@@ -32,7 +33,9 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
         <PageTitle slug={slug} />
 
         <section className="leading-8 text-navy/80 md:text-[17px]">
-          {["kinder", "children", "teens", "youth"].includes(slug) ? (
+          {slug === "bulletin" ? (
+            <Bulletin />
+          ) : ["kinder", "children", "teens", "youth"].includes(slug) ? (
             <NextGen page={page} />
           ) : slug === "worship" ? (
             <Worship />
