@@ -14,7 +14,7 @@ export default function SectionNav({ slug }: { slug: string }) {
       </div>
 
       {/* 같은 메뉴의 다른 페이지: 가운데 정렬 탭, | 구분 */}
-      <nav className="overflow-x-auto border-b border-navy/10 bg-[#f1f4e4]">
+      <nav className="section-tabs sticky top-[104px] z-40 overflow-x-auto border-b border-navy/10 bg-[#f1f4e4]">
         <ul className="mx-auto flex w-max items-center whitespace-nowrap px-5 py-4 text-[15px] font-bold lg:text-[17px]">
           {section.pages.map((p, i) => (
             <li key={p.slug} className="flex items-center">
@@ -36,7 +36,7 @@ export function PageTitle({ slug }: { slug: string }) {
   const page = section?.pages.find((p) => p.slug === slug);
   if (!section || !page) return null;
   return (
-    <div id="content" className="mb-14 scroll-mt-6 text-center">
+    <div id="content" className="mb-14 scroll-mt-24 text-center">
       <h1 className="text-4xl font-extrabold text-navy md:text-5xl">{page.title}</h1>
       <span className="mx-auto mt-5 block h-1 w-10 bg-gold" />
       <p className="mt-4 text-sm text-navy/40">

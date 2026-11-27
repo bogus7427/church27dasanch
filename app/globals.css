@@ -96,3 +96,8 @@ body::before {
 .popup body > header {
   display: none;
 }
+
+/* 하위 메뉴 탭 줄: 일반 창은 헤더(104px) 아래, 새 창은 맨 위에 고정 */
+.popup .section-tabs {
+  top: 0;
+}

@@ -6,7 +6,7 @@ const pen = Nanum_Pen_Script({ weight: "400", subsets: ["latin"], display: "swap
 /** 인사말: 왼쪽 글 · 오른쪽 목사님 사진 + 서명 (기존 홈페이지 인사말 느낌) */
 export default function Greeting() {
   return (
-    <div className="grid items-end gap-10 md:grid-cols-[1fr_300px]">
+    <div id="greeting" className="grid scroll-mt-24 items-end gap-10 md:grid-cols-[1fr_300px]">
       <div>
         <p className={`${pen.className} text-6xl leading-none text-[#4a9bb5]`}>Welcome</p>
         <p className={`${brush.className} mt-4 text-4xl leading-snug text-[#a88a55] md:text-5xl`}>
