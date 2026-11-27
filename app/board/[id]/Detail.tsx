@@ -2,10 +2,11 @@
 
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import Comments from "../../components/Comments";
+import { useProfile } from "@/lib/useProfile";
 
 type Post = {
   id: number;
@@ -20,6 +21,15 @@ type Post = {
 export default function Detail() {
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null | undefined>(undefined);
+  const { isAdmin } = useProfile();
+  const router = useRouter();
+
+  async function remove() {
+    if (!confirm("이 글을 삭제할까요?")) return;
+    const { error } = await supabase.from("posts").delete().eq("id", Number(id));
+    if (error) return alert(`삭제하지 못했습니다: ${error.message}`);
+    router.push("/board");
+  }
 
   useEffect(() => {
     supabase
@@ -43,9 +53,21 @@ export default function Detail() {
 
   return (
     <article className="mx-auto max-w-3xl px-5 py-20">
-      <Link href="/board" className="text-sm text-navy/50 hover:text-navy">
-        ← 게시판
-      </Link>
+      <div className="flex items-center justify-between">
+        <Link href="/board" className="text-sm text-navy/50 hover:text-navy">
+          ← 교회소식
+        </Link>
+        {isAdmin && (
+          <span className="flex gap-2 text-sm">
+            <Link href={`/board/write?id=${post.id}`} className="rounded-full border border-navy/20 px-4 py-1.5 text-navy hover:bg-cream">
+              수정
+            </Link>
+            <button onClick={remove} className="rounded-full border border-red-200 px-4 py-1.5 text-red-500 hover:bg-red-50">
+              삭제
+            </button>
+          </span>
+        )}
+      </div>
       <span className="mt-6 inline-block rounded-full bg-cream px-3 py-1 text-xs text-gold">{post.category}</span>
       <h1 className="mt-3 text-4xl text-navy md:text-5xl">{post.title}</h1>
       <p className="mt-3 text-sm text-navy/40">

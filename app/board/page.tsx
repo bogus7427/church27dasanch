@@ -4,12 +4,14 @@ import Link from "next/link";
 import SectionNav from "@/app/components/SectionNav";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useProfile } from "@/lib/useProfile";
 
 type Post = { id: number; category: string; title: string; author_name: string | null; created_at: string; href: string };
 
 export default function BoardPage() {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [cat, setCat] = useState("전체");
+  const { isAdmin } = useProfile();
 
   useEffect(() => {
     // 교회소식 = 소식(news 표: 홈 화면 교회소식과 같은 글) + 게시판 글(posts, 주보·칼럼·영상 메뉴 글 제외)
@@ -35,7 +37,14 @@ export default function BoardPage() {
     <>
     <SectionNav slug="news" />
     <div className="mx-auto max-w-4xl px-5 py-20">
-      <h1 className="text-5xl text-navy">교회소식</h1>
+      <div className="flex items-end justify-between gap-4">
+        <h1 className="text-5xl text-navy">교회소식</h1>
+        {isAdmin && (
+          <Link href="/board/write" className="btn shrink-0 rounded-full bg-navy px-6 py-2.5 text-white hover:bg-gold">
+            ✏️ 글쓰기
+          </Link>
+        )}
+      </div>
       <p className="mt-3 text-navy/60">다산교회의 이야기와 나눔. 로그인하면 댓글을 남길 수 있어요.</p>
 
       <div className="mt-8 flex flex-wrap gap-2">
