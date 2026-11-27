@@ -51,8 +51,25 @@ export default function Detail() {
       <p className="mt-3 text-sm text-navy/40">
         {post.author_name ?? "관리자"} · {post.created_at.slice(0, 10).replaceAll("-", ".")}
       </p>
-      {post.image_url && <img src={post.image_url} alt="" className="mt-8 w-full rounded-3xl object-cover" />}
-      <div className="mt-8 whitespace-pre-wrap rounded-3xl bg-white p-8 leading-8 text-navy/80">{post.content || "내용이 없습니다."}</div>
+      {/* 본문의 이미지 줄("[이미지] 주소" 또는 주소만)은 사진으로, 나머지는 글로 */}
+      {(() => {
+        const lines = (post.content ?? "").split("\n");
+        const isImg = (l: string) => l.startsWith("[이미지] ") || /^https?:\/\/\S+\.(jpe?g|png|gif)$/i.test(l.trim());
+        const imgs = lines.filter(isImg).map((l) => l.replace("[이미지] ", "").trim());
+        const text = lines.filter((l) => !isImg(l)).join("\n").trim();
+        const pics = imgs.length ? imgs : post.image_url ? [post.image_url] : [];
+        return (
+          <>
+            {text && <div className="mt-8 whitespace-pre-wrap rounded-3xl bg-white p-8 leading-8 text-navy/80">{text}</div>}
+            {pics.map((src) => (
+              <a key={src} href={src} target="_blank" rel="noreferrer" className="mt-6 block">
+                <img src={src} alt="" loading="lazy" className="w-full rounded-3xl object-cover" />
+              </a>
+            ))}
+            {!text && pics.length === 0 && <div className="mt-8 rounded-3xl bg-white p-8 text-navy/80">내용이 없습니다.</div>}
+          </>
+        );
+      })()}
       <Comments targetType="post" targetId={String(post.id)} />
     </article>
   );

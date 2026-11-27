@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 /** 주보·다산칼럼: posts 표의 해당 분류 글. content = 본문 + 이미지 줄 (주보는 주소만, 칼럼은 "[이미지] 주소") */
 type Row = { id: number; title: string; content: string | null; created_at: string };
 const PAGE = 20;
+const isVid = (l: string) => l.startsWith("[영상] ");
 const isImg = (l: string) => l.startsWith("[이미지] ") || /^https?:\/\/\S+\.(jpe?g|png|gif)$/i.test(l);
 
 export default function Bulletin({ category = "주보" }: { category?: string }) {
@@ -42,7 +43,8 @@ export default function Bulletin({ category = "주보" }: { category?: string })
         {rows.slice(0, shown).map((r, i) => {
           const lines = (r.content ?? "").split("\n");
           const imgs = lines.filter(isImg).map((l) => l.replace("[이미지] ", ""));
-          const text = lines.filter((l) => !isImg(l)).join("\n").trim();
+          const vids = lines.filter(isVid).map((l) => l.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)?.[1]).filter(Boolean);
+          const text = lines.filter((l) => !isImg(l) && !isVid(l)).join("\n").trim();
           const isOpen = open === r.id;
           return (
             <li key={r.id} className="border-b border-navy/10">
@@ -58,6 +60,16 @@ export default function Bulletin({ category = "주보" }: { category?: string })
               </button>
               {isOpen && (
                 <div className="space-y-4 bg-cream/50 p-4 md:p-6">
+                  {vids.map((id) => (
+                    <div key={id} className="mx-auto aspect-video w-full max-w-3xl overflow-hidden rounded-xl shadow">
+                      <iframe
+                        title={r.title}
+                        className="h-full w-full"
+                        src={`https://www.youtube-nocookie.com/embed/${id}?rel=0`}
+                        allowFullScreen
+                      />
+                    </div>
+                  ))}
                   {text && <p className="mx-auto max-w-3xl whitespace-pre-line rounded-xl bg-white p-6 leading-8 text-navy/80 md:p-8">{text}</p>}
                   {imgs.map((src, k) => (
                     <a key={src} href={src} target="_blank" rel="noreferrer" className="block">

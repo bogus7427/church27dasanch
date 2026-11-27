@@ -7,6 +7,9 @@ import Worship from "./Worship";
 import NextGen from "./NextGen";
 import Bulletin from "./Bulletin";
 
+// 기존 홈페이지에서 가져온 글을 보여주는 메뉴 → posts 표의 분류
+const BOARD_CATEGORY: Record<string, string> = { bulletin: "주보", column: "다산칼럼", lecture: "초청강의" };
+
 export function generateStaticParams() {
   return SECTIONS.flatMap((s) => s.pages.filter((p) => !p.href).map((p) => ({ slug: p.slug })));
 }
@@ -33,8 +36,8 @@ export default async function InfoPage({ params }: { params: Promise<{ slug: str
         <PageTitle slug={slug} />
 
         <section className="leading-8 text-navy/80 md:text-[17px]">
-          {slug === "bulletin" || slug === "column" ? (
-            <Bulletin category={slug === "column" ? "다산칼럼" : "주보"} />
+          {BOARD_CATEGORY[slug] ? (
+            <Bulletin category={BOARD_CATEGORY[slug]} />
           ) : ["kinder", "children", "teens", "youth"].includes(slug) ? (
             <NextGen page={page} />
           ) : slug === "worship" ? (
