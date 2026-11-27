@@ -16,10 +16,10 @@ const menus = SECTIONS.map((s) => ({
 // 상단 메뉴와 하위 목록: 모두 새 창으로 열기
 const POPUP = new Set(SECTIONS.flatMap((s) => [s.label, ...s.pages.map((p) => p.title)]));
 function openIntro(e: React.MouseEvent<HTMLAnchorElement>) {
-  // 화면 비율로 위치·크기 지정 (왼쪽 14% · 위 1.5%, 너비 75% · 높이 88%)
+  // 화면 비율로 위치·크기 지정 (왼쪽 14% · 맨 위, 너비 75% · 높이 93% = 제목줄·주소창 포함 화면 아래 끝까지)
   const W = screen.availWidth;
   const H = screen.availHeight;
-  const size = `width=${Math.round(W * 0.75)},height=${Math.round(H * 0.88)},left=${Math.round(W * 0.137)},top=${Math.round(H * 0.016)}`;
+  const size = `width=${Math.round(W * 0.75)},height=${Math.round(H * 0.93)},left=${Math.round(W * 0.141)},top=0`;
   // 새 창은 항상 배너를 건너뛰고 탭 줄 바로 아래(제목)부터 보이게
   const { href, hash } = e.currentTarget;
   const url = hash ? href : `${href}#tabs`;
