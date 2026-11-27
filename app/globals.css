@@ -111,3 +111,14 @@ body::before {
 .popup body > footer {
   display: none;
 }
+
+/* 메인 상단 카드: 순서대로 떠오르기 · 사진 천천히 확대 · 마우스 올리면 들리고 확대 */
+@keyframes hero-rise { from { opacity: 0; transform: translateY(40px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes hero-kenburns { 0%, 100% { transform: scale(1.04) translate(0, 0); } 50% { transform: scale(1.14) translate(-1.5%, -1%); } }
+.hero-card { animation: hero-rise .9s cubic-bezier(.2,.8,.2,1) both; transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s; }
+.hero-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px -25px rgba(22,56,79,.55); }
+.hero-zoom { animation: hero-kenburns 18s ease-in-out infinite; transition: filter .6s; }
+.hero-card:hover .hero-zoom { filter: brightness(1.1) saturate(1.1); }
+.hero-text { transition: transform .5s cubic-bezier(.2,.8,.2,1); }
+.hero-card:hover .hero-text { transform: translateX(8px); }
+@media (prefers-reduced-motion: reduce) { .hero-card, .hero-zoom { animation: none; } }

@@ -81,36 +81,37 @@ export default async function Home() {
 
         {/* 히어로 아래 큰 비주얼 카드 */}
         <div className="relative mx-auto mt-20 grid max-w-6xl gap-4 md:grid-cols-3">
-          <div
-            className="relative aspect-[4/3] overflow-hidden rounded-[2rem] bg-cover bg-center md:col-span-2 md:aspect-auto"
-            style={{ backgroundImage: `url(${IMG.sanctuary})` }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e2d]/55 to-transparent" />
-            <p className="absolute bottom-7 left-7 text-left text-xl font-bold text-white md:text-2xl">
+          <div className="hero-card group relative aspect-[4/3] overflow-hidden rounded-[2rem] md:col-span-2 md:aspect-auto" style={{ animationDelay: "0.1s" }}>
+            <div className="hero-zoom absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${IMG.sanctuary})` }} />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e2d]/60 to-transparent" />
+            <p className="hero-text absolute bottom-7 left-7 text-left text-xl font-bold text-white md:text-2xl">
               주님의 전에서
               <br />
               함께 예배해요
             </p>
           </div>
           <div className="grid gap-4">
-            <a
-              href="/video"
-              className="relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-navy bg-cover bg-center p-7 text-left text-white transition hover:brightness-110"
-              style={{ backgroundImage: `linear-gradient(to top, rgba(22,56,79,.95), rgba(22,56,79,.25)), url(${IMG.bibleRead})` }}
-            >
-              <p className="text-sm text-white/60">
-                이번 주 말씀{week && <> · {fmt(week.preached_at, false)}</>}
-              </p>
-              <p className="mt-1 text-xl font-bold">“{week?.title ?? cover[0]?.title ?? "주일 설교"}”</p>
-              {week?.verse && <p className="mt-1 text-sm text-white/75">{week.verse} · 김준영 목사</p>}
+            <a href="/video" className="hero-card group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-navy p-7 text-left text-white" style={{ animationDelay: "0.25s" }}>
+              <div className="hero-zoom absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${IMG.bibleRead})`, animationDelay: "-6s" }} />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgba(22,56,79,.95)] to-[rgba(22,56,79,.25)]" />
+              <div className="hero-text relative">
+                <p className="text-sm text-white/60">
+                  이번 주 말씀{week && <> · {fmt(week.preached_at, false)}</>}
+                </p>
+                <p className="mt-1 text-xl font-bold">“{week?.title ?? cover[0]?.title ?? "주일 설교"}”</p>
+                {week?.verse && <p className="mt-1 text-sm text-white/75">{week.verse} · 김준영 목사</p>}
+              </div>
+              <span className="absolute right-6 top-6 grid h-10 w-10 place-items-center rounded-full bg-white/15 text-lg backdrop-blur transition duration-500 group-hover:rotate-[-45deg] group-hover:bg-white group-hover:text-navy">→</span>
             </a>
-            <div
-              className="flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-olive bg-cover bg-center p-7 text-left text-white"
-              style={{ backgroundImage: `linear-gradient(to top, rgba(63,165,138,.95), rgba(63,165,138,.3)), url(${IMG.cross})` }}
-            >
-              <p className="text-sm text-white/70">주일 예배</p>
-              <p className="mt-1 text-xl font-bold">{worships[0]?.time ?? "오전 11:00"}</p>
-            </div>
+            <a href="#worship" className="hero-card group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[2rem] bg-olive p-7 text-left text-white" style={{ animationDelay: "0.4s" }}>
+              <div className="hero-zoom absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${IMG.cross})`, animationDelay: "-12s" }} />
+              <div className="absolute inset-0 bg-gradient-to-t from-[rgba(63,165,138,.95)] to-[rgba(63,165,138,.3)]" />
+              <div className="hero-text relative">
+                <p className="text-sm text-white/70">주일 예배</p>
+                <p className="mt-1 text-xl font-bold">{worships[0]?.time ?? "오전 11:00"}</p>
+              </div>
+              <span className="absolute right-6 top-6 grid h-10 w-10 place-items-center rounded-full bg-white/15 text-lg backdrop-blur transition duration-500 group-hover:rotate-[-45deg] group-hover:bg-white group-hover:text-[#3fa58a]">→</span>
+            </a>
           </div>
         </div>
 
@@ -146,18 +147,37 @@ export default async function Home() {
             <p className="text-sm font-bold tracking-[0.3em] text-gold">EMBLEM</p>
             <h3 className="mt-3 text-3xl font-extrabold tracking-tight text-navy">다산교회의 핵심 비전</h3>
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-              {[
-                ["복음 중심의 예배공동체", "십자가 모양"],
-                ["말씀 중심의 훈련공동체", "성경책 펼친 모양"],
-                ["기도 중심의 능력공동체", "날개 모양"],
-                ["사랑 중심의 교제공동체", "원 모양"],
-                ["소통 중심의 선교공동체", "지구 모양"],
-              ].map(([t, s], i) => (
-                <li key={t} className="flex items-baseline gap-3 border-b border-navy/10 pb-3">
+              {(
+                [
+                  ["복음 중심의 예배공동체", "십자가 모양", <path key="c" d="M12 3v18M6 9h12" />],
+                  [
+                    "말씀 중심의 훈련공동체",
+                    "성경책 펼친 모양",
+                    <path key="b" d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13c-3-.5-6 0-8 1.5zM12 6v13" />,
+                  ],
+                  [
+                    "기도 중심의 능력공동체",
+                    "날개 모양",
+                    <path key="w" d="M12 18C9 12 5 10 2 10c2 3 4 6 10 8zm0 0c3-6 7-8 10-8-2 3-4 6-10 8zM12 18c-2-5-3-8-6-11M12 18c2-5 3-8 6-11" />,
+                  ],
+                  ["사랑 중심의 교제공동체", "원 모양", <circle key="o" cx="12" cy="12" r="8" />],
+                  [
+                    "소통 중심의 선교공동체",
+                    "지구 모양",
+                    <g key="g">
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" />
+                    </g>,
+                  ],
+                ] as const
+              ).map(([t, s, icon], i) => (
+                <li key={t} className="flex items-center gap-3 border-b border-navy/10 pb-3">
                   <span className="text-sm font-bold text-gold">{i + 1}</span>
-                  <span>
-                    <span className="font-semibold text-navy">{t}</span>
-                    <span className="ml-2 text-sm text-navy/40">({s})</span>
+                  <span className="font-semibold text-navy">{t}</span>
+                  <span title={s} className="ml-auto grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#e7f3f8] text-[#0b8fc0]">
+                    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" role="img" aria-label={s}>
+                      {icon}
+                    </svg>
                   </span>
                 </li>
               ))}
